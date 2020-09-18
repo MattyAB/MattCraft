@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="Render\Camera.cs" />
+    <Compile Include="Render\GLError.cs" />
     <Compile Include="Render\NetConstructor.cs" />
     <Compile Include="Render\Shader.cs" />
     <Compile Include="Render\Texture.cs" />
@@ -72,6 +74,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Render\Render.cs" />
+    <Compile Include="World\Block.cs" />
+    <Compile Include="World\Blocks\Air.cs" />
+    <Compile Include="World\Blocks\Dirt.cs" />
+    <Compile Include="World\Blocks\Snow.cs" />
+    <Compile Include="World\Chunk.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -80,5 +87,6 @@
     <None Include="Shader\shader.frag" />
     <None Include="Shader\shader.vert" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

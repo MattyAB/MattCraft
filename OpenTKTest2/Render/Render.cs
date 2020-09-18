@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTKTest2.World.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,31 @@ namespace OpenTKTest2.Render
 
         float deg = 30.0f;
 
+        const int DRAW_LIMIT = 10000;
+
         public Render(int Width, int Height)
         {
             GL.ClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
-            VAO = new VertexArray();
+            TextureTiled blocktextures = new TextureTiled("../../terrain.png", 16, 16);
+
+            NetConstructor constructor = new NetConstructor(blocktextures);
+
+            World.Chunk chunk = new World.Chunk();
+
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    for (int k = 0; k < 8; k++)
+                        if(i+j+k < 10)
+                            chunk.SetBlock(new Dirt(), i, j, k);
+                        else if(i+j+k == 10)
+                            chunk.SetBlock(new Snow(), i, j, k);
+
+            chunk.SetBlock(new Air(), 2, 2, 2);
+
+            GLError.PrintError();
+            //VAO = new VertexArray(constructor.GetVertexData(faces));
+            VAO = new VertexArray(constructor.GetVertexData(chunk.GetRenderFaces()));
             shader = new Shader("../../Shader/shader.vert", "../../Shader/shader.frag");
 
             this.width = Width;
@@ -35,8 +56,6 @@ namespace OpenTKTest2.Render
 
             //Texture texture = new Texture("../../TextureA.png");
             //texture.Use();
-
-            TextureTiled blocktextures = new TextureTiled("../../terrain.png", 16, 16);
 
             float[,] initialdata = new float[,] 
                 { { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },  { 1.0f, 0.0f, 0.0f, 1.0f, 0.0f },  { 1.0f, 1.0f, 0.0f, 1.0f, 1.0f },  { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f },
@@ -52,18 +71,14 @@ namespace OpenTKTest2.Render
                 }
             }
 
-            List<Face> faces = new List<Face>();
+            /**List<Face> faces = new List<Face>();
+            for(int i = 0; i < 26; i++) 
+                faces.Add(new Face(i, 0, 0, 0, 180));
 
-            faces.Add(new Face(0, 0, 0, 0, 180));
-            faces.Add(new Face(0, 0, 0, 1, 180));
-            faces.Add(new Face(0, 0, 0, 2, 180));
-            faces.Add(new Face(1, 0, 0, 0, 180));
-            faces.Add(new Face(0, 1, 0, 1, 178));
-            faces.Add(new Face(0, 0, 1, 2, 180));
+            NetConstructor constructor = new NetConstructor(blocktextures);**/
+            //chunk.SetBlock(new World.Blocks.Snow(), 0, 1, 2);
 
-            NetConstructor constructor = new NetConstructor(blocktextures);
-
-            VAO.PushVertexArray(constructor.GetVertexData(faces));
+            //VAO.PushVertexArray(constructor.GetVertexData(chunk.GetRenderFaces()));
         }
 
         public void RenderFrame(FrameEventArgs e)
@@ -74,7 +89,7 @@ namespace OpenTKTest2.Render
 
             deg += 1.0f;
 
-            Matrix4 view = Matrix4.CreateTranslation(0.0f, -1.0f, -3.0f);
+            Matrix4 view = Matrix4.CreateTranslation(0.0f, -1.0f, -20.0f);
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
             
             shader.UniformMat4("model", ref model);
@@ -84,7 +99,7 @@ namespace OpenTKTest2.Render
             shader.Use();
             VAO.BindVAO();
 
-            GL.DrawArrays(PrimitiveType.Quads, 0, 24);
+            GL.DrawArrays(PrimitiveType.Quads, 0, DRAW_LIMIT);
         }
 
         internal void Cleanup()

@@ -10,20 +10,24 @@ namespace OpenTKTest2.Render
 {
     class VertexArray
     {
-        int maxvertices = 100;
+        int maxvertices = 10000;
 
         int VAO;
         int VBO;
 
-        public VertexArray()
+        public VertexArray(float[,] vertices)
         {
             GenVertexBuffer();
 
-            VAO = GL.GenBuffer();
+            VAO = GL.GenVertexArray();
             GL.BindVertexArray(VAO);
+            GLError.PrintError();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData<float>(BufferTarget.ArrayBuffer, maxvertices * 5 * sizeof(float), new float[0,0], BufferUsageHint.DynamicDraw);
+            GLError.PrintError();
+            //GL.BufferData<float>(BufferTarget.ArrayBuffer, maxvertices * 5 * sizeof(float), new float[0, 0], BufferUsageHint.DynamicDraw);
+            GL.BufferData<float>(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.DynamicDraw);
+            GLError.PrintError();
 
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
@@ -35,7 +39,14 @@ namespace OpenTKTest2.Render
         public void PushVertexArray(float[,] data)
         {
             GL.BindVertexArray(VAO);
+
+            int returner;
+            GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out returner);
+            Console.WriteLine(returner);
+
+            GLError.PrintError();
             GL.BufferSubData<float>(BufferTarget.ArrayBuffer, (IntPtr)0, sizeof(float) * data.Length, data);
+            GLError.PrintError();
         }
 
         void GenVertexBuffer()
