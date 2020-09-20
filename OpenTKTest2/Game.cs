@@ -2,6 +2,7 @@
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using OpenTK.Platform;
 using System;
 
 namespace OpenTKTest2
@@ -19,6 +20,8 @@ namespace OpenTKTest2
         {
             render = new Render.Render(Width, Height);
 
+            render.SetCameraPos(new Vector3(-5, 2, -5));
+
             base.OnLoad(e);
         }
 
@@ -30,6 +33,8 @@ namespace OpenTKTest2
             base.OnRenderFrame(e);
         }
 
+        int currentcentrex;
+        int currentcentrey;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             KeyboardState input = Keyboard.GetState();
@@ -38,6 +43,30 @@ namespace OpenTKTest2
             {
                 Exit();
             }
+
+            MouseState state = Mouse.GetState();
+
+            int centrex = Width / 2 + X;
+            int centrey = Height / 2 + Y;
+
+            Console.WriteLine("location:" + X + ", " + Y);
+            Console.WriteLine("mouse:" + state.X + ", " + state.Y);
+
+            //Console.WriteLine("location:" + (state.X + X - centrex) + ", " + (state.Y + Y - centrey));
+
+            if (Focused)
+            {
+                if (CursorVisible)
+                    CursorVisible = false;
+                //render.PushMouseState(state.X - currentcentrex, state.Y - currentcentrey);
+                render.PushMouseState(state.X, state.Y);
+                Mouse.SetPosition(centrex, centrey);
+                currentcentrex = Mouse.GetState().X;
+                currentcentrey = Mouse.GetState().Y;
+            }
+            else
+                if (CursorVisible)
+                CursorVisible = true;
 
             base.OnUpdateFrame(e);
         }

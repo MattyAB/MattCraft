@@ -13,11 +13,12 @@ namespace OpenTKTest2.Render
     {
         VertexArray VAO;
         Shader shader;
+        TextureTiled blocktextures;
+        NetConstructor constructor;
+        Camera camera;
 
         int width;
         int height;
-
-        float deg = 30.0f;
 
         const int DRAW_LIMIT = 10000;
 
@@ -25,25 +26,9 @@ namespace OpenTKTest2.Render
         {
             GL.ClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
-            TextureTiled blocktextures = new TextureTiled("../../terrain.png", 16, 16);
-
-            NetConstructor constructor = new NetConstructor(blocktextures);
-
-            World.Chunk chunk = new World.Chunk();
-
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                    for (int k = 0; k < 8; k++)
-                        if(i+j+k < 10)
-                            chunk.SetBlock(new Dirt(), i, j, k);
-                        else if(i+j+k == 10)
-                            chunk.SetBlock(new Snow(), i, j, k);
-
-            chunk.SetBlock(new Air(), 2, 2, 2);
-
             GLError.PrintError();
             //VAO = new VertexArray(constructor.GetVertexData(faces));
-            VAO = new VertexArray(constructor.GetVertexData(chunk.GetRenderFaces()));
+            VAO = new VertexArray();
             shader = new Shader("../../Shader/shader.vert", "../../Shader/shader.frag");
 
             this.width = Width;
@@ -54,42 +39,48 @@ namespace OpenTKTest2.Render
 
             SetTextureModes();
 
-            //Texture texture = new Texture("../../TextureA.png");
-            //texture.Use();
+            blocktextures = new TextureTiled("../../terrain.png", 16, 16);
 
-            float[,] initialdata = new float[,] 
-                { { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },  { 1.0f, 0.0f, 0.0f, 1.0f, 0.0f },  { 1.0f, 1.0f, 0.0f, 1.0f, 1.0f },  { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f },
-                  { 0.0f, 0.0f, -0.5f, 0.0f, 0.0f }, { 1.0f, 0.0f, -0.5f, 1.0f, 0.0f }, { 1.0f, 1.0f, -0.5f, 1.0f, 1.0f }, { 0.0f, 1.0f, -0.5f, 0.0f, 1.0f }};
+            constructor = new NetConstructor(blocktextures);
 
-            for (int i = 0; i < 4; i++)
-            {
-                float[] values = blocktextures.GetCornerLocation(243, i);
-                for (int j = 0; j < 2; j++)
-                {
-                    initialdata[4 * j + i, 3] = values[0];
-                    initialdata[4 * j + i, 4] = values[1];
-                }
-            }
+            World.Chunk chunk = new World.Chunk();
 
-            /**List<Face> faces = new List<Face>();
-            for(int i = 0; i < 26; i++) 
-                faces.Add(new Face(i, 0, 0, 0, 180));
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    for (int k = 0; k < 8; k++)
+                        if (i + j + k < 10)
+                            chunk.SetBlock(new Dirt(), i, j, k);
+                        else if (i + j + k == 10)
+                            chunk.SetBlock(new Snow(), i, j, k);
 
-            NetConstructor constructor = new NetConstructor(blocktextures);**/
-            //chunk.SetBlock(new World.Blocks.Snow(), 0, 1, 2);
+            chunk.SetBlock(new Air(), 2, 2, 2);
 
-            //VAO.PushVertexArray(constructor.GetVertexData(chunk.GetRenderFaces()));
+            camera = new Camera();
+
+            VAO.PushVertexArray(constructor.GetVertexData(chunk.GetRenderFaces()));
+        }
+
+        internal void PushMouseState(int dx, int dy)
+        {
+            camera.HandleInput((float)dx / 100f, -(float)dy / 100f);
+        }
+
+        public void SetCameraPos(Vector3 pos)
+        {
+            camera.SetCameraPos(pos);
         }
 
         public void RenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            Matrix4 model = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(deg)) * Matrix4.CreateRotationX(0.2f);
+            Matrix4 model = Matrix4.Identity;
 
-            deg += 1.0f;
+            Vector3 initialpos = new Vector3(-5, 2, -5);
+            //camera.UpdatePosTarget(initialpos, initialpos + Vector3.UnitZ + Vector3.UnitX);
+            //camera.HandleInput(0, 0);
 
-            Matrix4 view = Matrix4.CreateTranslation(0.0f, -1.0f, -20.0f);
+            Matrix4 view = camera.GetViewMat();
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
             
             shader.UniformMat4("model", ref model);

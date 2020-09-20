@@ -11,7 +11,7 @@ namespace OpenTKTest2
     {
         static void Main(string[] args)
         { 
-            using(Game game = new Game(800, 600, "Matt's Test"))
+            using(Game game = new Game(1920, 1080, "Matt's Test"))
             {
                 game.Run(60.0);
             }
