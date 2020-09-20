@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using OpenTK.Graphics.OpenGL;
+
+namespace MattCraft.Client.Render
+{
+    class GLError
+    {
+        public static void PrintError()
+        {
+            ErrorCode error = GL.GetError();
+
+            if (error == ErrorCode.NoError)
+            { 
+                
+            }
+            else
+                Console.WriteLine(error);
+        }
+
+        internal static void PrintError(string v)
+        {
+            ErrorCode error = GL.GetError();
+
+            if (error == ErrorCode.NoError)
+            {
+
+            }
+            else
+                Console.WriteLine(v + ": " + error);
+        }
+    }
+}
