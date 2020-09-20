@@ -21,13 +21,12 @@ namespace OpenTKTest2.Render
 
             VAO = GL.GenVertexArray();
             GL.BindVertexArray(VAO);
-            GLError.PrintError();
+            GLError.PrintError("Post VAO Creation");
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GLError.PrintError();
+            GLError.PrintError("Pre buffer initialisation");
             GL.BufferData<float>(BufferTarget.ArrayBuffer, MAX_VERTICES * 5 * sizeof(float), new float[0, 0], BufferUsageHint.DynamicDraw);
-            //GL.BufferData<float>(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.DynamicDraw);
-            GLError.PrintError();
+            GLError.PrintError("Post buffer initialisation");
 
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
@@ -44,9 +43,9 @@ namespace OpenTKTest2.Render
             GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out returner);
             Console.WriteLine(returner);
 
-            GLError.PrintError();
+            GLError.PrintError("Pre buffer data sub");
             GL.BufferSubData<float>(BufferTarget.ArrayBuffer, (IntPtr)0, sizeof(float) * data.Length, data);
-            GLError.PrintError();
+            GLError.PrintError("Post buffer data sub");
         }
 
         void GenVertexBuffer()

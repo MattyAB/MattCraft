@@ -20,7 +20,7 @@ namespace OpenTKTest2
         {
             render = new Render.Render(Width, Height);
 
-            render.SetCameraPos(new Vector3(-5, 2, -5));
+            render.SetCameraPos(new Vector3(2, 2, 2));
 
             base.OnLoad(e);
         }
@@ -52,8 +52,6 @@ namespace OpenTKTest2
             Console.WriteLine("location:" + X + ", " + Y);
             Console.WriteLine("mouse:" + state.X + ", " + state.Y);
 
-            //Console.WriteLine("location:" + (state.X + X - centrex) + ", " + (state.Y + Y - centrey));
-
             if (Focused)
             {
                 if (CursorVisible)
@@ -66,7 +64,7 @@ namespace OpenTKTest2
             }
             else
                 if (CursorVisible)
-                CursorVisible = true;
+                    CursorVisible = true;
 
             base.OnUpdateFrame(e);
         }

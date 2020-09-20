@@ -21,5 +21,17 @@ namespace OpenTKTest2.Render
             else
                 Console.WriteLine(error);
         }
+
+        internal static void PrintError(string v)
+        {
+            ErrorCode error = GL.GetError();
+
+            if (error == ErrorCode.NoError)
+            {
+
+            }
+            else
+                Console.WriteLine(v + ": " + error);
+        }
     }
 }

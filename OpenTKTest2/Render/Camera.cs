@@ -18,7 +18,7 @@ namespace OpenTKTest2.Render
         Matrix4 view;
 
         float xrot = 143.6f % (float)(Math.PI*2);
-        float yrot = 143.2f % (float)(Math.PI * 2);
+        float yrot = (float)(Math.PI / 2);
 
         public Camera()
         {
@@ -53,8 +53,16 @@ namespace OpenTKTest2.Render
 
         public void HandleInput(float deltax, float deltay)
         {
+            float smalldelta = 0.01f;
+
             xrot += deltax;
             yrot += deltay;
+            if (yrot < 0 + smalldelta)
+                yrot = 0 + smalldelta;
+            if (yrot > Math.PI - smalldelta)
+                yrot = (float)Math.PI - smalldelta;
+
+            Console.WriteLine(yrot);
 
             cameraTarget = cameraPos + Matrix3.CreateRotationY(xrot) * Matrix3.CreateRotationX(yrot) * new Vector3(0, 1, 0);
 

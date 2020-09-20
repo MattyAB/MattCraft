@@ -62,7 +62,7 @@ namespace OpenTKTest2.Render
 
         internal void PushMouseState(int dx, int dy)
         {
-            camera.HandleInput((float)dx / 100f, -(float)dy / 100f);
+            camera.HandleInput((float)dx / 500f, (float)dy / 500f);
         }
 
         public void SetCameraPos(Vector3 pos)
@@ -75,10 +75,6 @@ namespace OpenTKTest2.Render
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Matrix4 model = Matrix4.Identity;
-
-            Vector3 initialpos = new Vector3(-5, 2, -5);
-            //camera.UpdatePosTarget(initialpos, initialpos + Vector3.UnitZ + Vector3.UnitX);
-            //camera.HandleInput(0, 0);
 
             Matrix4 view = camera.GetViewMat();
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
