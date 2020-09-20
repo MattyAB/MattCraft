@@ -62,8 +62,6 @@ namespace MattCraft.Client.Render
             if (yrot > Math.PI - smalldelta)
                 yrot = (float)Math.PI - smalldelta;
 
-            Console.WriteLine(yrot);
-
             cameraTarget = cameraPos + Matrix3.CreateRotationY(xrot) * Matrix3.CreateRotationX(yrot) * new Vector3(0, 1, 0);
 
             CalcViewMat();

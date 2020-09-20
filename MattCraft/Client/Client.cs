@@ -7,80 +7,87 @@ using System;
 
 namespace MattCraft.Client
 {
-    public class Client : GameWindow
+    public class Client
     {
         Render.Render render;
 
-        public Client(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
+        public Client(int width, int height)
         {
-
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            render = new Render.Render(Width, Height);
+            render = new Render.Render(width, height);
 
             render.SetCameraPos(new Vector3(2, 2, 2));
-
-            base.OnLoad(e);
         }
 
-        protected override void OnRenderFrame(FrameEventArgs e)
+        public void OnRenderFrame(FrameEventArgs e)
         {
             render.RenderFrame(e);
-
-            Context.SwapBuffers();
-            base.OnRenderFrame(e);
         }
 
         int currentcentrex;
         int currentcentrey;
-        protected override void OnUpdateFrame(FrameEventArgs e)
+        public UpdateFrameReturn OnUpdateFrame(FrameEventArgs e, UpdateFrameArgs args)
         {
+            UpdateFrameReturn returner = new UpdateFrameReturn();
             KeyboardState input = Keyboard.GetState();
 
             if (input.IsKeyDown(Key.Escape))
             {
-                Exit();
+                returner.exit = true;
             }
+            else
+                returner.exit = false;
 
             MouseState state = Mouse.GetState();
 
-            int centrex = Width / 2 + X;
-            int centrey = Height / 2 + Y;
+            //Console.WriteLine("mouse:" + args.x + ", " + args.y);
 
-            Console.WriteLine("location:" + X + ", " + Y);
-            Console.WriteLine("mouse:" + state.X + ", " + state.Y);
-
-            if (Focused)
+            if (args.focused)
             {
-                if (CursorVisible)
-                    CursorVisible = false;
+                returner.cursorVisible = false;
                 //render.PushMouseState(state.X - currentcentrex, state.Y - currentcentrey);
-                render.PushMouseState(state.X, state.Y);
-                Mouse.SetPosition(centrex, centrey);
+                render.PushMouseState(args.x, args.y);
+                
+                returner.resetmouse = true;
                 currentcentrex = Mouse.GetState().X;
                 currentcentrey = Mouse.GetState().Y;
             }
             else
-                if (CursorVisible)
-                CursorVisible = true;
+            {
+                returner.cursorVisible = true;
+                returner.resetmouse = false;
+            }
 
-            base.OnUpdateFrame(e);
+            returner.alterCursorVisible = returner.cursorVisible ^ args.cursorVisible;
+
+            return returner;
         }
 
-        protected override void OnUnload(EventArgs e)
+        public void OnUnload()
         {
             render.Cleanup();
-
-            base.OnUnload(e);
         }
 
-        protected override void OnResize(EventArgs e)
+        public void UpdateAspect(EventArgs e, int width, int height)
         {
-            GL.Viewport(0, 0, Width, Height);
-            render.updateAspect(Width, Height);
-            base.OnResize(e);
+            render.updateAspect(width, height);
         }
+    }
+
+    public struct UpdateFrameArgs
+    {
+        public int width;
+        public int height;
+        public int x;
+        public int y;
+        public bool cursorVisible;
+        public bool focused;
+    }
+
+    public struct UpdateFrameReturn
+    {
+        public bool exit;
+        public bool resetmouse;
+        public bool cursorVisible;
+        public bool alterCursorVisible;
     }
 }

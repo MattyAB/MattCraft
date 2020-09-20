@@ -14,9 +14,9 @@ namespace MattCraftClient
     {
         static void Main(string[] args)
         {
-            using(MattCraft.Client.Client client = new MattCraft.Client.Client(800, 600, "MattCraft"))
+            using (Window window = new Window(800, 600))
             {
-                client.Run(60.0);
+                window.Run(60.0);
             }
         }
     }
