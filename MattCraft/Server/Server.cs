@@ -21,8 +21,8 @@ namespace MattCraft.Server
             world = new World.World();
             world.PopulateChunks();
 
-            playerpos = new Vector3(14f, 14f, 14f);
-            //playerpos = new Vector3(16f, 16f, 16f);
+            //playerpos = new Vector3(14f, 14f, 14f);
+            playerpos = new Vector3(16f, 16f, 16f);
         }
 
         // Gets full chunk data given current player position.

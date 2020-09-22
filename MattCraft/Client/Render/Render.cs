@@ -61,6 +61,19 @@ namespace MattCraft.Client.Render
                     newfaces[i].x += 16 * chunk.Key[0];
                     newfaces[i].y += 16 * chunk.Key[1];
                     newfaces[i].z += 16 * chunk.Key[2];
+                    for(int j = 0; j < faces.Count; j++)
+                    {
+                        if(newfaces[i].x == faces[j].x &&
+                            newfaces[i].y == faces[j].y &&
+                            newfaces[i].z == faces[j].z &&
+                            newfaces[i].direction == faces[j].direction)
+                        {
+                            faces.RemoveAt(j);
+                            newfaces.RemoveAt(i);
+                            i--; // So that it doesn't skip out faces due to the removal of previous ones.
+                            break;
+                        }
+                    }
                 }
                 faces.AddRange(newfaces);
             }
