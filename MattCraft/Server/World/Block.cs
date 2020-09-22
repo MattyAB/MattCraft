@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MattCraft.Server.World
 {
-    abstract class Block
+    public abstract class Block
     {
         int id;
         int texID;

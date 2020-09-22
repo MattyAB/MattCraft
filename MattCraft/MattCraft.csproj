@@ -77,6 +77,7 @@
     <Compile Include="Server\World\Blocks\Dirt.cs" />
     <Compile Include="Server\World\Blocks\Snow.cs" />
     <Compile Include="Server\World\Chunk.cs" />
+    <Compile Include="Server\World\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Client\terrain.png" />

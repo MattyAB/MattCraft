@@ -20,9 +20,9 @@ namespace MattCraft.Client.Render
         float xrot = 143.6f % (float)(Math.PI*2);
         float yrot = (float)(Math.PI / 2);
 
-        public Camera()
+        public Camera(Vector3 cameraPos)
         {
-            cameraPos = new Vector3(-10f, -10f, -10f);
+            this.cameraPos = cameraPos;
             cameraTarget = new Vector3(0f, 0f, 0f);
 
             CalcViewMat();

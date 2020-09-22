@@ -10,6 +10,7 @@ using OpenTK.Input;
 using OpenTK.Platform.Windows;
 using MattCraft;
 using MattCraft.Client;
+using MattCraft.Server;
 
 namespace MattCraftClient
 {
@@ -22,10 +23,14 @@ namespace MattCraftClient
 
         bool ingame = false;
         MattCraft.Client.Client client;
+        MattCraft.Server.Server server;
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            // Development thing so that we go straight into game.
+            OnClientLoad();
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -74,7 +79,8 @@ namespace MattCraftClient
 
         void OnClientLoad()
         {
-            client = new Client(Width, Height);
+            server = new Server();
+            client = new Client(Width, Height, server.GetFullChunkData(), server.GetPlayerPos());
             ingame = true;
         }
 

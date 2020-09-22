@@ -7,7 +7,7 @@ using MattCraft.Client.Render;
 
 namespace MattCraft.Server.World
 {
-    class Chunk
+    public class Chunk
     {
         Block[,,] blockdata;
 

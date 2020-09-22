@@ -21,9 +21,9 @@ namespace MattCraft.Client.Render
         int width;
         int height;
 
-        const int DRAW_LIMIT = 10000;
+        const int DRAW_LIMIT = 100000;
 
-        public Render(int Width, int Height)
+        public Render(int Width, int Height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
             GL.ClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
@@ -44,21 +44,28 @@ namespace MattCraft.Client.Render
 
             constructor = new NetConstructor(blocktextures);
 
-            Chunk chunk = new Chunk();
+            camera = new Camera(playerpos);
 
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                    for (int k = 0; k < 8; k++)
-                        if (i + j + k < 10)
-                            chunk.SetBlock(new Dirt(), i, j, k);
-                        else if (i + j + k == 10)
-                            chunk.SetBlock(new Snow(), i, j, k);
+            VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(initialchunkdata)));
+        }
 
-            chunk.SetBlock(new Air(), 2, 2, 2);
+        List<Face> GenerateChunkFaces(Dictionary<int[], Chunk> initialchunkdata)
+        {
+            List<Face> faces = new List<Face>();
 
-            camera = new Camera();
+            foreach(KeyValuePair<int[], Chunk> chunk in initialchunkdata)
+            {
+                List<Face> newfaces = chunk.Value.GetRenderFaces();
+                for(int i = 0; i < newfaces.Count; i++)
+                {
+                    newfaces[i].x += 16 * chunk.Key[0];
+                    newfaces[i].y += 16 * chunk.Key[1];
+                    newfaces[i].z += 16 * chunk.Key[2];
+                }
+                faces.AddRange(newfaces);
+            }
 
-            VAO.PushVertexArray(constructor.GetVertexData(chunk.GetRenderFaces()));
+            return faces;
         }
 
         internal void PushMouseState(int dx, int dy)
@@ -78,7 +85,7 @@ namespace MattCraft.Client.Render
             Matrix4 model = Matrix4.Identity;
 
             Matrix4 view = camera.GetViewMat();
-            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
             
             shader.UniformMat4("model", ref model);
             shader.UniformMat4("view", ref view);

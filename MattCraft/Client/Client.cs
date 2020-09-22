@@ -1,9 +1,11 @@
-﻿using OpenTK;
+﻿using MattCraft.Server.World;
+using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using OpenTK.Platform;
 using System;
+using System.Collections.Generic;
 
 namespace MattCraft.Client
 {
@@ -11,11 +13,9 @@ namespace MattCraft.Client
     {
         Render.Render render;
 
-        public Client(int width, int height)
+        public Client(int width, int height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
-            render = new Render.Render(width, height);
-
-            render.SetCameraPos(new Vector3(2, 2, 2));
+            render = new Render.Render(width, height, initialchunkdata, playerpos);
         }
 
         public void OnRenderFrame(FrameEventArgs e)
@@ -39,12 +39,9 @@ namespace MattCraft.Client
 
             MouseState state = Mouse.GetState();
 
-            //Console.WriteLine("mouse:" + args.x + ", " + args.y);
-
             if (args.focused)
             {
                 returner.cursorVisible = false;
-                //render.PushMouseState(state.X - currentcentrex, state.Y - currentcentrey);
                 render.PushMouseState(args.x, args.y);
                 
                 returner.resetmouse = true;

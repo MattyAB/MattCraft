@@ -10,7 +10,7 @@ namespace MattCraft.Client.Render
 {
     class VertexArray
     {
-        const int MAX_VERTICES = 10000;
+        const int MAX_VERTICES = 100000;
 
         int VAO;
         int VBO;
