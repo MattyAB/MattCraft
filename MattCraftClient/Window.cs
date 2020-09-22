@@ -26,17 +26,12 @@ namespace MattCraftClient
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            System.Threading.Thread.Sleep(1000);
-            //Mouse.SetPosition(0, 0);
-            //System.Threading.Thread.Sleep(1000);
-            //Mouse.SetPosition(1000, 1000);
-            OnClientLoad();
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            client.OnRenderFrame(e);
+            if(ingame)
+                client.OnRenderFrame(e);
 
             Context.SwapBuffers();
 
@@ -45,8 +40,19 @@ namespace MattCraftClient
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            UpdateFrameReturn update = client.OnUpdateFrame(e, getFrameArgs());
-            handleFrameReturn(update);
+            if(ingame)
+            {
+                UpdateFrameReturn update = client.OnUpdateFrame(e, getFrameArgs());
+                handleFrameReturn(update);
+            }
+            else
+            {
+                KeyboardState input = Keyboard.GetState();
+                if(input.IsKeyDown(Key.Space))
+                {
+                    OnClientLoad();
+                }
+            }
 
             base.OnUpdateFrame(e);
         }
@@ -69,6 +75,7 @@ namespace MattCraftClient
         void OnClientLoad()
         {
             client = new Client(Width, Height);
+            ingame = true;
         }
 
         UpdateFrameArgs getFrameArgs()
@@ -82,8 +89,6 @@ namespace MattCraftClient
             args.cursorVisible = CursorVisible;
             args.focused = Focused;
 
-            Console.WriteLine(Mouse.GetCursorState().X + ", " + Mouse.GetCursorState().Y);
-
             return args;
         }
 
@@ -94,7 +99,6 @@ namespace MattCraftClient
             if (returned.alterCursorVisible)
             CursorVisible = returned.cursorVisible;
 
-            //if (returned.resetmouse && DateTime.Now.Millisecond < 10)
             if (returned.resetmouse)
             {
                 Mouse.SetPosition(Width / 2 + X, Height / 2 + Y);
