@@ -51,6 +51,11 @@ namespace MattCraft.Client.Render
             this.cameraPos = pos;
         }
 
+        public Vector3 GetCameraPos()
+        {
+            return cameraPos;
+        }
+
         public void HandleInput(float deltax, float deltay)
         {
             float smalldelta = 0.01f;
@@ -70,6 +75,11 @@ namespace MattCraft.Client.Render
         public Matrix4 GetViewMat()
         {
             return view;
+        }
+
+        public float GetXRot()
+        {
+            return xrot;
         }
     }
 }

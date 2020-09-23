@@ -47,7 +47,7 @@ namespace MattCraftClient
         {
             if(ingame)
             {
-                UpdateFrameReturn update = client.OnUpdateFrame(e, getFrameArgs());
+                ClientUpdateFrameReturn update = client.OnUpdateFrame(e, getFrameArgs());
                 handleFrameReturn(update);
             }
             else
@@ -84,9 +84,9 @@ namespace MattCraftClient
             ingame = true;
         }
 
-        UpdateFrameArgs getFrameArgs()
+        ClientFrameUpdateArgs getFrameArgs()
         {
-            UpdateFrameArgs args = new UpdateFrameArgs();
+            ClientFrameUpdateArgs args = new ClientFrameUpdateArgs();
 
             args.height = Height;
             args.width = Width;
@@ -98,7 +98,7 @@ namespace MattCraftClient
             return args;
         }
 
-        void handleFrameReturn(UpdateFrameReturn returned)
+        void handleFrameReturn(ClientUpdateFrameReturn returned)
         {
             if (returned.exit)
                 Exit();

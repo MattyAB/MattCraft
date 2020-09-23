@@ -23,15 +23,13 @@ namespace MattCraft.Client
             render.RenderFrame(e);
         }
 
-        public UpdateFrameReturn OnUpdateFrame(FrameEventArgs e, UpdateFrameArgs args)
+        public ClientUpdateFrameReturn OnUpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)
         {
-            UpdateFrameReturn returner = new UpdateFrameReturn();
+            ClientUpdateFrameReturn returner = new ClientUpdateFrameReturn();
             KeyboardState input = Keyboard.GetState();
 
             if (input.IsKeyDown(Key.Escape))
-            {
                 returner.exit = true;
-            }
             else
                 returner.exit = false;
 
@@ -39,7 +37,24 @@ namespace MattCraft.Client
             {
                 returner.cursorVisible = false;
                 render.PushMouseState(args.x, args.y);
-                
+
+                float moveval = 0.1f;
+                if (input.IsKeyDown(Key.ControlLeft))
+                    moveval = moveval * 3;
+
+                if (input.IsKeyDown(Key.W))
+                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(0f, 0f, -moveval)));
+                if (input.IsKeyDown(Key.S))
+                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(0f, 0f, moveval)));
+                if (input.IsKeyDown(Key.A))
+                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(-moveval, 0f, 0f)));
+                if (input.IsKeyDown(Key.D))
+                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(moveval, 0f, 0f)));
+                if (input.IsKeyDown(Key.Space))
+                    render.SetCameraPos(render.GetCameraPos() + new Vector3(0f, moveval, 0f));
+                if (input.IsKeyDown(Key.ShiftLeft))
+                    render.SetCameraPos(render.GetCameraPos() + new Vector3(0f, -moveval, 0f));
+
                 returner.resetmouse = true;
             }
             else
@@ -64,7 +79,7 @@ namespace MattCraft.Client
         }
     }
 
-    public struct UpdateFrameArgs
+    public struct ClientFrameUpdateArgs
     {
         public int width;
         public int height;
@@ -72,13 +87,17 @@ namespace MattCraft.Client
         public int y;
         public bool cursorVisible;
         public bool focused;
+
+        public Server.GameUpdate gameupdate;
     }
 
-    public struct UpdateFrameReturn
+    public struct ClientUpdateFrameReturn
     {
         public bool exit;
         public bool resetmouse;
         public bool cursorVisible;
         public bool alterCursorVisible;
+
+        public Server.GameUpdate gameupdate;
     }
 }

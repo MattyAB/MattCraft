@@ -91,6 +91,16 @@ namespace MattCraft.Client.Render
             camera.SetCameraPos(pos);
         }
 
+        public Vector3 GetCameraPos()
+        {
+            return camera.GetCameraPos();
+        }
+
+        public float GetXRot()
+        {
+            return camera.GetXRot();
+        }
+
         public void RenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
