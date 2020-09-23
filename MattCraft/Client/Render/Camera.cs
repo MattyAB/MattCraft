@@ -12,13 +12,9 @@ namespace MattCraft.Client.Render
     {
         Vector3 cameraPos;
         Vector3 cameraTarget;
-        Vector3 cameraDirection;
         Vector3 up = new Vector3(0f, 1f, 0f);
 
         Matrix4 view;
-
-        float xrot = 143.6f % (float)(Math.PI*2);
-        float yrot = (float)(Math.PI / 2);
 
         public Camera(Vector3 cameraPos)
         {
@@ -59,11 +55,6 @@ namespace MattCraft.Client.Render
         public Matrix4 GetViewMat()
         {
             return view;
-        }
-
-        public float GetXRot()
-        {
-            return xrot;
         }
     }
 }

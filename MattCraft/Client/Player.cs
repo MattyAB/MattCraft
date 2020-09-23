@@ -27,8 +27,8 @@ namespace MattCraft.Client
         }
         private Vector3 position;
 
-        private float xrot;
-        private float yrot;
+        private float xrot = 0;
+        private float yrot = 0;
 
         float MOUSE_SENSITIVITY = 100f;
 
@@ -49,13 +49,13 @@ namespace MattCraft.Client
                 moveval = moveval * 3;
 
             if (input.IsKeyDown(Key.W))
-                Position = Position + (Matrix3.CreateRotationY(camera.GetXRot()) * new Vector3(0f, 0f, -moveval));
+                Position = Position + (Matrix3.CreateRotationY(xrot) * new Vector3(0f, 0f, -moveval));
             if (input.IsKeyDown(Key.S))
-                Position = Position + (Matrix3.CreateRotationY(camera.GetXRot()) * new Vector3(0f, 0f, moveval));
+                Position = Position + (Matrix3.CreateRotationY(xrot) * new Vector3(0f, 0f, moveval));
             if (input.IsKeyDown(Key.A))
-                Position = Position + (Matrix3.CreateRotationY(camera.GetXRot()) * new Vector3(-moveval, 0f, 0f));
+                Position = Position + (Matrix3.CreateRotationY(xrot) * new Vector3(-moveval, 0f, 0f));
             if (input.IsKeyDown(Key.D))
-                Position = Position + (Matrix3.CreateRotationY(camera.GetXRot()) * new Vector3(moveval, 0f, 0f));
+                Position = Position + (Matrix3.CreateRotationY(xrot) * new Vector3(moveval, 0f, 0f));
             if (input.IsKeyDown(Key.Space))
                 Position = Position + new Vector3(0f, moveval, 0f);
             if (input.IsKeyDown(Key.ShiftLeft))
