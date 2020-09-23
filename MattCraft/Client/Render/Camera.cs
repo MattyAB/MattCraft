@@ -30,11 +30,6 @@ namespace MattCraft.Client.Render
 
         public void CalcViewMat()
         {
-           // cameraDirection = Vector3.Normalize(cameraPos - cameraTarget); // This is actually the opposite direction to the camera
-
-           // Vector3 cameraRight = Vector3.Normalize(Vector3.Cross(up, cameraDirection)); // This is our camera's x-axis
-           // Vector3 cameraUp = Vector3.Cross(cameraDirection, cameraRight); // This is our camera's y-axis
-
             view = Matrix4.LookAt(cameraPos, cameraTarget, up);
         }
 
@@ -46,6 +41,11 @@ namespace MattCraft.Client.Render
             CalcViewMat();
         }
 
+        public void SetCameraTarget(Vector3 cameraTarget)
+        {
+            this.cameraTarget = cameraTarget;
+        }
+
         public void SetCameraPos(Vector3 pos)
         {
             this.cameraPos = pos;
@@ -54,26 +54,6 @@ namespace MattCraft.Client.Render
         public Vector3 GetCameraPos()
         {
             return cameraPos;
-        }
-
-        public void HandleInput(float deltax, float deltay)
-        {
-            float smalldelta = 0.01f;
-
-            Console.WriteLine(deltax);
-
-            xrot += deltax;
-            yrot += deltay;
-            if (yrot < 0 + smalldelta)
-                yrot = 0 + smalldelta;
-            if (yrot > Math.PI - smalldelta)
-                yrot = (float)Math.PI - smalldelta;
-
-            cameraTarget = cameraPos + Matrix3.CreateRotationY(xrot) * Matrix3.CreateRotationX(yrot) * new Vector3(0, 1, 0);
-
-            Console.WriteLine(xrot);
-
-            CalcViewMat();
         }
 
         public Matrix4 GetViewMat()
