@@ -16,7 +16,6 @@ namespace MattCraft.Client.Render
         Shader shader;
         TextureTiled blocktextures;
         NetConstructor constructor;
-        Camera camera;
 
         int width;
         int height;
@@ -44,7 +43,7 @@ namespace MattCraft.Client.Render
 
             constructor = new NetConstructor(blocktextures);
 
-            camera = new Camera(playerpos);
+            //render = new render(playerpos);
 
             VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(initialchunkdata)));
         }
@@ -81,33 +80,13 @@ namespace MattCraft.Client.Render
             return faces;
         }
 
-        internal void PushMouseState(int dx, int dy)
-        {
-            camera.HandleInput((float)dx / 500f, (float)dy / 500f);
-        }
-
-        public void SetCameraPos(Vector3 pos)
-        {
-            camera.SetCameraPos(pos);
-        }
-
-        public Vector3 GetCameraPos()
-        {
-            return camera.GetCameraPos();
-        }
-
-        public float GetXRot()
-        {
-            return camera.GetXRot();
-        }
-
-        public void RenderFrame(FrameEventArgs e)
+        public void RenderFrame(FrameEventArgs e, Matrix4 view)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Matrix4 model = Matrix4.Identity;
 
-            Matrix4 view = camera.GetViewMat();
+            //Matrix4 view = render.GetViewMat();
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
             
             shader.UniformMat4("model", ref model);

@@ -65,6 +65,7 @@
     <Compile Include="Client\Render\Camera.cs" />
     <Compile Include="Client\Render\GLError.cs" />
     <Compile Include="Client\Render\NetConstructor.cs" />
+    <Compile Include="Client\Player.cs" />
     <Compile Include="Client\Render\Render.cs" />
     <Compile Include="Client\Render\Shader.cs" />
     <Compile Include="Client\Render\Texture.cs" />

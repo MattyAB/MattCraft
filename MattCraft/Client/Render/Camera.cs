@@ -60,6 +60,8 @@ namespace MattCraft.Client.Render
         {
             float smalldelta = 0.01f;
 
+            Console.WriteLine(deltax);
+
             xrot += deltax;
             yrot += deltay;
             if (yrot < 0 + smalldelta)
@@ -68,6 +70,8 @@ namespace MattCraft.Client.Render
                 yrot = (float)Math.PI - smalldelta;
 
             cameraTarget = cameraPos + Matrix3.CreateRotationY(xrot) * Matrix3.CreateRotationX(yrot) * new Vector3(0, 1, 0);
+
+            Console.WriteLine(xrot);
 
             CalcViewMat();
         }

@@ -12,15 +12,17 @@ namespace MattCraft.Client
     public class Client
     {
         Render.Render render;
+        Player player;
 
         public Client(int width, int height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
             render = new Render.Render(width, height, initialchunkdata, playerpos);
+            player = new Player(playerpos);
         }
 
         public void OnRenderFrame(FrameEventArgs e)
         {
-            render.RenderFrame(e);
+            render.RenderFrame(e, player.GetViewMatrix());
         }
 
         public ClientUpdateFrameReturn OnUpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)
@@ -36,26 +38,9 @@ namespace MattCraft.Client
             if (args.focused)
             {
                 returner.cursorVisible = false;
-                render.PushMouseState(args.x, args.y);
-
-                float moveval = 0.1f;
-                if (input.IsKeyDown(Key.ControlLeft))
-                    moveval = moveval * 3;
-
-                if (input.IsKeyDown(Key.W))
-                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(0f, 0f, -moveval)));
-                if (input.IsKeyDown(Key.S))
-                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(0f, 0f, moveval)));
-                if (input.IsKeyDown(Key.A))
-                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(-moveval, 0f, 0f)));
-                if (input.IsKeyDown(Key.D))
-                    render.SetCameraPos(render.GetCameraPos() + (Matrix3.CreateRotationY(render.GetXRot()) * new Vector3(moveval, 0f, 0f)));
-                if (input.IsKeyDown(Key.Space))
-                    render.SetCameraPos(render.GetCameraPos() + new Vector3(0f, moveval, 0f));
-                if (input.IsKeyDown(Key.ShiftLeft))
-                    render.SetCameraPos(render.GetCameraPos() + new Vector3(0f, -moveval, 0f));
-
                 returner.resetmouse = true;
+
+                player.OnUpdateFrame(args);
             }
             else
             {
