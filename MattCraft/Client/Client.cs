@@ -23,8 +23,6 @@ namespace MattCraft.Client
             render.RenderFrame(e);
         }
 
-        int currentcentrex;
-        int currentcentrey;
         public UpdateFrameReturn OnUpdateFrame(FrameEventArgs e, UpdateFrameArgs args)
         {
             UpdateFrameReturn returner = new UpdateFrameReturn();
@@ -37,16 +35,12 @@ namespace MattCraft.Client
             else
                 returner.exit = false;
 
-            MouseState state = Mouse.GetState();
-
             if (args.focused)
             {
                 returner.cursorVisible = false;
                 render.PushMouseState(args.x, args.y);
                 
                 returner.resetmouse = true;
-                currentcentrex = Mouse.GetState().X;
-                currentcentrey = Mouse.GetState().Y;
             }
             else
             {

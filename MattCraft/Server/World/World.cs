@@ -21,7 +21,7 @@ namespace MattCraft.Server.World
         {
             Chunk chunk = new Chunk();
 
-            /**
+            
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                     for (int k = 0; k < 8; k++)
@@ -29,12 +29,13 @@ namespace MattCraft.Server.World
                             chunk.SetBlock(new Blocks.Dirt(), i, j, k);
                         else if (i + j + k == 10)
                             chunk.SetBlock(new Blocks.Snow(), i, j, k);
-            **/
+            
 
+            /**
             for (int i = 0; i < 16; i++)
                 for (int j = 0; j < 16; j++)
                     for (int k = 0; k < 16; k++)
-                        chunk.SetBlock(new Blocks.Dirt(), i, j, k);
+                        chunk.SetBlock(new Blocks.Dirt(), i, j, k);**/
 
             chunkdata.Add(new int[] { 0, 0, 0 }, chunk);
             chunkdata.Add(new int[] { 1, 0, 0 }, chunk);
