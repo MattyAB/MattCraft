@@ -12,103 +12,30 @@ namespace MattCraft.Client.Render
 {
     public class Render
     {
-        VertexArray VAO;
-        Shader shader;
-        TextureTiled blocktextures;
-        NetConstructor constructor;
-
-        int width;
-        int height;
-
-        const int DRAW_LIMIT = 100000;
+        WorldRender worldRender;
 
         public Render(int Width, int Height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
             GL.ClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
-            GLError.PrintError();
-            //VAO = new VertexArray(constructor.GetVertexData(faces));
-            VAO = new VertexArray();
-            shader = new Shader("../../../MattCraft/Client/Shader/shader.vert", "../../../MattCraft/Client/Shader/shader.frag");
-
-            this.width = Width;
-            this.height = Height;
-
-            GL.Enable(EnableCap.DepthTest);
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-
             SetTextureModes();
 
-            blocktextures = new TextureTiled("../../../MattCraft/Client/terrain.png", 16, 16);
-
-            constructor = new NetConstructor(blocktextures);
-
-            //render = new render(playerpos);
-
-            VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(initialchunkdata)));
+            worldRender = new WorldRender(Width, Height, initialchunkdata, playerpos);
         }
 
-        List<Face> GenerateChunkFaces(Dictionary<int[], Chunk> initialchunkdata)
+        internal void RenderFrame(FrameEventArgs e, Matrix4 view)
         {
-            List<Face> faces = new List<Face>();
-
-            foreach(KeyValuePair<int[], Chunk> chunk in initialchunkdata)
-            {
-                List<Face> newfaces = chunk.Value.GetRenderFaces();
-                for(int i = 0; i < newfaces.Count; i++)
-                {
-                    newfaces[i].x += 16 * chunk.Key[0];
-                    newfaces[i].y += 16 * chunk.Key[1];
-                    newfaces[i].z += 16 * chunk.Key[2];
-                    for(int j = 0; j < faces.Count; j++)
-                    {
-                        if(newfaces[i].x == faces[j].x &&
-                            newfaces[i].y == faces[j].y &&
-                            newfaces[i].z == faces[j].z &&
-                            newfaces[i].direction == faces[j].direction)
-                        {
-                            faces.RemoveAt(j);
-                            newfaces.RemoveAt(i);
-                            i--; // So that it doesn't skip out faces due to the removal of previous ones.
-                            break;
-                        }
-                    }
-                }
-                faces.AddRange(newfaces);
-            }
-
-            return faces;
+            worldRender.RenderFrame(e, view);
         }
 
-        public void RenderFrame(FrameEventArgs e, Matrix4 view)
+        public void UpdateAspect(int Width, int Height)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            Matrix4 model = Matrix4.Identity;
-
-            //Matrix4 view = render.GetViewMat();
-            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
-            
-            shader.UniformMat4("model", ref model);
-            shader.UniformMat4("view", ref view);
-            shader.UniformMat4("projection", ref perspective);
-
-            shader.Use();
-            VAO.BindVAO();
-
-            GL.DrawArrays(PrimitiveType.Quads, 0, DRAW_LIMIT);
+            worldRender.UpdateAspect(Width, Height);
         }
 
-        internal void Cleanup()
+        public void Cleanup()
         {
-            VAO.CleanUp();
-            shader.Dispose();
-        }
-
-        public void updateAspect(int Width, int Height)
-        {
-            this.width = Width;
-            this.height = Height;
+            worldRender.Cleanup();
         }
 
         public void SetTextureModes()

@@ -53,7 +53,7 @@ namespace MattCraft.Client
 
             returner.alterCursorVisible = returner.cursorVisible ^ args.cursorVisible;
 
-            player.GetLookingAt(initialchunkdata);
+            //player.GetLookingAt(initialchunkdata);
 
             return returner;
         }
@@ -65,7 +65,7 @@ namespace MattCraft.Client
 
         public void UpdateAspect(EventArgs e, int width, int height)
         {
-            render.updateAspect(width, height);
+            render.UpdateAspect(width, height);
         }
     }
 
