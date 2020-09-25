@@ -33,6 +33,11 @@ namespace MattCraft.Server.World
             return blockdata[x, y, z];
         }
 
+        internal Block GetBlock(int[] blockcoords)
+        {
+            return blockdata[blockcoords[0], blockcoords[1], blockcoords[2]];
+        }
+
         public void SetBlock(Block block, int x, int y, int z)
         {
             blockdata[x, y, z] = block;

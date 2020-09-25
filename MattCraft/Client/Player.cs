@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Input;
 using MattCraft.Client.Render;
+using MattCraft.Server.World;
 
 namespace MattCraft.Client
 {
@@ -76,6 +77,116 @@ namespace MattCraft.Client
             camera.SetCameraTarget(camera.GetCameraPos() + Matrix3.CreateRotationY(xrot) * Matrix3.CreateRotationX(yrot) * new Vector3(0, 1, 0));
 
             camera.CalcViewMat();
+        }
+
+        public void GetLookingAt(Dictionary<int[], Chunk> localchunks)
+        {
+            Vector3 ViewDirection = camera.GetDirectionMatrix();
+
+            int xpolarity = (ViewDirection.X >= 0) ? 1 : -1;
+            int ypolarity = (ViewDirection.Y >= 0) ? 1 : -1;
+            int zpolarity = (ViewDirection.Z >= 0) ? 1 : -1;
+
+            //Vector3 PositionInts = Floor(Position);
+
+            //Vector3 position = new Vector3(Position.X, Position.Y, Position.Z); // Make sure we take a deep copy.
+
+            List<Vector3> vectors = new List<Vector3>();
+
+            // The distance between this coordinate and the next integer boundary
+            float xboundary = (Position.X - Floor(Position).X);
+            xboundary = (xpolarity == 1) ? 1 - xboundary : xboundary;
+            float yboundary = (Position.Y - Floor(Position).Y);
+            yboundary = (ypolarity == 1) ? 1 - yboundary : yboundary;
+            float zboundary = (Position.Z - Floor(Position).Z);
+            zboundary = (zpolarity == 1) ? 1 - zboundary : zboundary;
+
+            // 10 is our view distance.
+            for (int i = 0; i < 1; i++)
+            {
+                float xdist = i + xboundary;
+                Vector3 xsearch = position + new Vector3(xdist * xpolarity, (ViewDirection.Y / ViewDirection.X) * xdist * ypolarity, (ViewDirection.Z / ViewDirection.X) * xdist * zpolarity);
+                vectors.Add(xsearch);
+                //Console.WriteLine(xsearch);
+
+                if (vectors[vectors.Count - 1].X - Math.Floor(vectors[vectors.Count - 1].X) == 0f |
+                    vectors[vectors.Count - 1].Y - Math.Floor(vectors[vectors.Count - 1].Y) == 0f |
+                    vectors[vectors.Count - 1].Z - Math.Floor(vectors[vectors.Count - 1].Z) == 0f)
+                {
+
+                }
+                else
+                {
+                    throw new Exception("Vector stored with no integer value: " + vectors[vectors.Count - 1]);
+                }
+
+
+
+                int[] chunkcoords = new int[] { (int)Floor(xsearch).X / 16, (int)Floor(xsearch).Y / 16, (int)Floor(xsearch).Z / 16 };
+                int[] blockcoords = new int[] { (int)Floor(xsearch).X % 16, (int)Floor(xsearch).Y % 16, (int)Floor(xsearch).Z % 16 };
+                if (blockcoords[0] < 0)
+                    blockcoords[0] = 16 + blockcoords[0];
+                if (blockcoords[1] < 0)
+                    blockcoords[1] = 16 + blockcoords[1];
+                if (blockcoords[2] < 0)
+                    blockcoords[2] = 16 + blockcoords[2];
+
+                //Console.WriteLine(chunkcoords[0] + ", " + chunkcoords[1] + ", " + chunkcoords[2]);
+
+                foreach(KeyValuePair<int[], Chunk> chunkpair in localchunks)
+                {
+                    // TODO: Implement IEqualityComparer to compare chunk keys properly
+                    if (chunkpair.Key[0] == chunkcoords[0] &&
+                        chunkpair.Key[1] == chunkcoords[1] &&
+                        chunkpair.Key[2] == chunkcoords[2])
+                    {
+                        Chunk chunk = chunkpair.Value;
+                        Block block = chunk.GetBlock(blockcoords);
+                        if (!block.Transparent())
+                            Console.WriteLine("This one!! " + (xsearch - position).Length);
+
+                    }
+                }
+
+                /**
+                // THIS ISN'T RIGHT, WE NEED TO USE THE VIEWDIRECTION vector
+                Vector3 attemptx = Position + Vector3.UnitX * xpolarity;
+                float distancex = (Position - attemptx).Length;
+                Vector3 attempty = Position + Vector3.UnitY * ypolarity;
+                float distancey = (Position - attempty).Length;
+                Vector3 attemptz = Position + Vector3.UnitZ * zpolarity;
+                float distancez = (Position - attemptz).Length;
+
+                /**
+                Vector3 difference;
+                if (distancex <= distancey && distancex <= distancez)
+                    difference = Vector3.UnitX * xpolarity;
+                else if (distancey <= distancex && distancey <= distancez)
+                    difference = Vector3.UnitY * ypolarity;
+                else
+                    difference = Vector3.UnitZ * zpolarity;
+
+                Vector3 closest;
+                if (distancex <= distancey && distancex <= distancez)
+                    closest = attemptx;
+                else if (distancey <= distancex && distancey <= distancez)
+                    closest = attempty;
+                else
+                    closest = attemptz;
+
+                if()**/
+            }
+
+            foreach(Vector3 vector in vectors)
+            {
+            }
+        }
+
+        public Vector3 Floor(Vector3 vec)
+        {
+            return new Vector3((float)Math.Floor(vec.X),
+                (float)Math.Floor(vec.Y),
+                (float)Math.Floor(vec.Z));
         }
 
         public Matrix4 GetViewMatrix()

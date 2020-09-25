@@ -14,8 +14,11 @@ namespace MattCraft.Client
         Render.Render render;
         Player player;
 
+        Dictionary<int[], Chunk> initialchunkdata;
+
         public Client(int width, int height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
+            this.initialchunkdata = initialchunkdata;
             render = new Render.Render(width, height, initialchunkdata, playerpos);
             player = new Player(playerpos);
         }
@@ -49,6 +52,8 @@ namespace MattCraft.Client
             }
 
             returner.alterCursorVisible = returner.cursorVisible ^ args.cursorVisible;
+
+            player.GetLookingAt(initialchunkdata);
 
             return returner;
         }

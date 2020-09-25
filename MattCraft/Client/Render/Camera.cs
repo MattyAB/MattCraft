@@ -56,5 +56,10 @@ namespace MattCraft.Client.Render
         {
             return view;
         }
+
+        internal Vector3 GetDirectionMatrix()
+        {
+            return cameraTarget - cameraPos;
+        }
     }
 }
