@@ -26,6 +26,7 @@ namespace MattCraft.Client.Render
             GLError.PrintError();
             //VAO = new VertexArray(constructor.GetVertexData(faces));
             VAO = new VertexArray();
+            VAO.SetupWorldRender();
             shader = new Shader("../../../MattCraft/Client/Shader/shader.vert", "../../../MattCraft/Client/Shader/shader.frag");
 
             this.width = Width;
@@ -41,6 +42,24 @@ namespace MattCraft.Client.Render
             //render = new render(playerpos);
 
             VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(initialchunkdata)));
+        }
+
+        public void RenderFrame(FrameEventArgs e, Matrix4 view)
+        {
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            Matrix4 model = Matrix4.Identity;
+
+            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
+
+            shader.UniformMat4("model", ref model);
+            shader.UniformMat4("view", ref view);
+            shader.UniformMat4("projection", ref perspective);
+
+            shader.Use();
+            VAO.BindVAO();
+
+            GL.DrawArrays(PrimitiveType.Quads, 0, DRAW_LIMIT);
         }
 
         List<Face> GenerateChunkFaces(Dictionary<int[], Chunk> initialchunkdata)
@@ -73,25 +92,6 @@ namespace MattCraft.Client.Render
             }
 
             return faces;
-        }
-
-        public void RenderFrame(FrameEventArgs e, Matrix4 view)
-        {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            Matrix4 model = Matrix4.Identity;
-
-            //Matrix4 view = render.GetViewMat();
-            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
-
-            shader.UniformMat4("model", ref model);
-            shader.UniformMat4("view", ref view);
-            shader.UniformMat4("projection", ref perspective);
-
-            shader.Use();
-            VAO.BindVAO();
-
-            GL.DrawArrays(PrimitiveType.Quads, 0, DRAW_LIMIT);
         }
 
         public void UpdateAspect(int Width, int Height)

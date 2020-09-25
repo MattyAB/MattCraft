@@ -10,8 +10,6 @@ namespace MattCraft.Client.Render
 {
     class VertexArray
     {
-        const int MAX_VERTICES = 100000;
-
         int VAO;
         int VBO;
 
@@ -22,7 +20,25 @@ namespace MattCraft.Client.Render
             VAO = GL.GenVertexArray();
             GL.BindVertexArray(VAO);
             GLError.PrintError("Post VAO Creation");
+        }
 
+        public void PushVertexArray(float[,] data)
+        {
+            GL.BindVertexArray(VAO);
+
+            /**
+            int returner;
+            GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out returner);
+            Console.WriteLine(returner);**/
+
+            GLError.PrintError("Pre buffer data sub");
+            GL.BufferSubData<float>(BufferTarget.ArrayBuffer, (IntPtr)0, sizeof(float) * data.Length, data);
+            GLError.PrintError("Post buffer data sub");
+        }
+
+        const int MAX_VERTICES = 100000;
+        public void SetupWorldRender()
+        {
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GLError.PrintError("Pre buffer initialisation");
             GL.BufferData<float>(BufferTarget.ArrayBuffer, MAX_VERTICES * 5 * sizeof(float), new float[0, 0], BufferUsageHint.DynamicDraw);
@@ -33,19 +49,6 @@ namespace MattCraft.Client.Render
 
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
-        }
-
-        public void PushVertexArray(float[,] data)
-        {
-            GL.BindVertexArray(VAO);
-
-            int returner;
-            GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out returner);
-            Console.WriteLine(returner);
-
-            GLError.PrintError("Pre buffer data sub");
-            GL.BufferSubData<float>(BufferTarget.ArrayBuffer, (IntPtr)0, sizeof(float) * data.Length, data);
-            GLError.PrintError("Post buffer data sub");
         }
 
         void GenVertexBuffer()
