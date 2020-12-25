@@ -24,7 +24,9 @@ namespace MattCraft.Client.Render
 
         public void PushVertexArray(float[,] data)
         {
+            GLError.PrintError("testtest");
             GL.BindVertexArray(VAO);
+            GLError.PrintError("Post vao creation");
 
             /**
             int returner;
@@ -49,22 +51,39 @@ namespace MattCraft.Client.Render
 
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
+            GLError.PrintError("Post world render setup");
+        }
+
+        public void SetupBlockViewRender()
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GLError.PrintError("Pre buffer initialisation");
+            GL.BufferData<float>(BufferTarget.ArrayBuffer, MAX_VERTICES * 3 * sizeof(float), new float[0, 0], BufferUsageHint.StreamDraw);
+            GLError.PrintError("Post buffer initialisation");
+
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
+            GLError.PrintError("Post blockview render setup");
         }
 
         void GenVertexBuffer()
         {
             VBO = GL.GenBuffer();
+            GLError.PrintError("Post vbo generation");
         }
 
         public void BindVAO()
         {
+            GLError.PrintError("Pre vao binding");
             GL.BindVertexArray(VAO);
+            GLError.PrintError("Post vao binding");
         }
 
         public void CleanUp()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.DeleteBuffer(VBO);
+            GLError.PrintError("Post vbo cleanup");
         }
     }
 }

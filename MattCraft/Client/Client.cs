@@ -53,6 +53,8 @@ namespace MattCraft.Client
 
             returner.alterCursorVisible = returner.cursorVisible ^ args.cursorVisible;
 
+            render.UpdateFrame(e, args);
+
             //player.GetLookingAt(initialchunkdata);
 
             return returner;

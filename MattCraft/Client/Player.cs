@@ -31,7 +31,7 @@ namespace MattCraft.Client
         private float xrot = 0;
         private float yrot = 0;
 
-        float MOUSE_SENSITIVITY = 100f;
+        float MOUSE_SENSITIVITY = 500f;
 
         public Player(Vector3 position)
         {

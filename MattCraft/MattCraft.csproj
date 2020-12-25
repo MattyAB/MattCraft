@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\Client.cs" />
+    <Compile Include="Client\Render\BlockViewRender.cs" />
     <Compile Include="Client\Render\Camera.cs" />
     <Compile Include="Client\Render\GLError.cs" />
     <Compile Include="Client\Render\NetConstructor.cs" />
@@ -86,8 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Client\Shader\shader.frag" />
-    <None Include="Client\Shader\shader.vert" />
+    <None Include="Client\Shader\wireshader.frag" />
+    <None Include="Client\Shader\blockshader.frag" />
+    <None Include="Client\Shader\worldshader.vert" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
   </ItemGroup>

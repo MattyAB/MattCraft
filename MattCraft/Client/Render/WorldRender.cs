@@ -27,13 +27,12 @@ namespace MattCraft.Client.Render
             //VAO = new VertexArray(constructor.GetVertexData(faces));
             VAO = new VertexArray();
             VAO.SetupWorldRender();
-            shader = new Shader("../../../MattCraft/Client/Shader/shader.vert", "../../../MattCraft/Client/Shader/shader.frag");
+            shader = new Shader("../../../MattCraft/Client/Shader/worldshader.vert", "../../../MattCraft/Client/Shader/blockshader.frag");
 
             this.width = Width;
             this.height = Height;
 
             GL.Enable(EnableCap.DepthTest);
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
             blocktextures = new TextureTiled("../../../MattCraft/Client/terrain.png", 16, 16);
 
@@ -46,6 +45,7 @@ namespace MattCraft.Client.Render
 
         public void RenderFrame(FrameEventArgs e, Matrix4 view)
         {
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Matrix4 model = Matrix4.Identity;

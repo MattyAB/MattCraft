@@ -13,6 +13,7 @@ namespace MattCraft.Client.Render
     public class Render
     {
         WorldRender worldRender;
+        BlockViewRender blockViewRender;
 
         public Render(int Width, int Height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
@@ -21,21 +22,30 @@ namespace MattCraft.Client.Render
             SetTextureModes();
 
             worldRender = new WorldRender(Width, Height, initialchunkdata, playerpos);
+            blockViewRender = new BlockViewRender(Width, Height, initialchunkdata, playerpos);
         }
 
         internal void RenderFrame(FrameEventArgs e, Matrix4 view)
         {
             worldRender.RenderFrame(e, view);
+            blockViewRender.RenderFrame(e, view);
+        }
+
+        public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)
+        {
+            blockViewRender.UpdateFrame(e, args);
         }
 
         public void UpdateAspect(int Width, int Height)
         {
             worldRender.UpdateAspect(Width, Height);
+            blockViewRender.UpdateAspect(Width, Height);
         }
 
         public void Cleanup()
         {
             worldRender.Cleanup();
+            blockViewRender.Cleanup();
         }
 
         public void SetTextureModes()
@@ -48,6 +58,7 @@ namespace MattCraft.Client.Render
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            GLError.PrintError("Post Texture Mode setup");
         }
     }
 }

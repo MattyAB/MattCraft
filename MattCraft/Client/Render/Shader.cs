@@ -63,6 +63,8 @@ namespace MattCraft.Client.Render
             GL.DetachShader(Handle, FragmentShader);
             GL.DeleteShader(FragmentShader);
             GL.DeleteShader(VertexShader);
+
+            GLError.PrintError("Post shader init");
         }
 
         internal void UniformMat4(string name, ref Matrix4 perspective)
@@ -73,6 +75,7 @@ namespace MattCraft.Client.Render
         public void Use()
         {
             GL.UseProgram(Handle);
+            GLError.PrintError("Post shader using");
         }
 
         private bool disposedValue = false;
@@ -82,6 +85,7 @@ namespace MattCraft.Client.Render
             if (!disposedValue)
             {
                 GL.DeleteProgram(Handle);
+                GLError.PrintError("Post shader deletion");
 
                 disposedValue = true;
             }
@@ -90,12 +94,14 @@ namespace MattCraft.Client.Render
         ~Shader()
         {
             GL.DeleteProgram(Handle);
+            GLError.PrintError("Post shader decomp");
         }
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+            GLError.PrintError("Post shader supression");
         }
     }
 }
