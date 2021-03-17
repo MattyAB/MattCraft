@@ -17,7 +17,7 @@ namespace MattCraft.Client.Render
 
         public Render(int Width, int Height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
-            GL.ClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+            GL.ClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 
             SetTextureModes();
 
@@ -25,10 +25,12 @@ namespace MattCraft.Client.Render
             blockViewRender = new BlockViewRender(Width, Height, initialchunkdata, playerpos);
         }
 
-        internal void RenderFrame(FrameEventArgs e, Matrix4 view)
+        internal void RenderFrame(FrameEventArgs e, Matrix4 view, int[] lookingat)
         {
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
             worldRender.RenderFrame(e, view);
-            blockViewRender.RenderFrame(e, view);
+            blockViewRender.RenderFrame(e, lookingat);
         }
 
         public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)

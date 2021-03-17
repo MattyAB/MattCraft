@@ -74,7 +74,9 @@
     <Compile Include="Client\Render\VertexArray.cs" />
     <Compile Include="Client\Render\WorldRender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\ChunkUpdate.cs" />
     <Compile Include="Server\Server.cs" />
+    <Compile Include="Server\ServerUpdateData.cs" />
     <Compile Include="Server\World\Block.cs" />
     <Compile Include="Server\World\Blocks\Air.cs" />
     <Compile Include="Server\World\Blocks\Dirt.cs" />

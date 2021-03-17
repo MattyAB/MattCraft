@@ -46,17 +46,18 @@ namespace MattCraft.Client.Render
         public void RenderFrame(FrameEventArgs e, Matrix4 view)
         {
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Matrix4 model = Matrix4.Identity;
 
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
 
+            shader.Use();
+
+            // Move this into general render class
             shader.UniformMat4("model", ref model);
             shader.UniformMat4("view", ref view);
             shader.UniformMat4("projection", ref perspective);
 
-            shader.Use();
             VAO.BindVAO();
 
             GL.DrawArrays(PrimitiveType.Quads, 0, DRAW_LIMIT);

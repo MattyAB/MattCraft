@@ -74,6 +74,7 @@ namespace MattCraft.Client.Render
 
         public void Use()
         {
+            GLError.PrintError("Pre shader using");
             GL.UseProgram(Handle);
             GLError.PrintError("Post shader using");
         }

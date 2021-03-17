@@ -25,7 +25,7 @@ namespace MattCraft.Client
 
         public void OnRenderFrame(FrameEventArgs e)
         {
-            render.RenderFrame(e, player.GetViewMatrix());
+            render.RenderFrame(e, player.GetViewMatrix(), player.GetLookingAt(initialchunkdata));
         }
 
         public ClientUpdateFrameReturn OnUpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)

@@ -28,10 +28,10 @@ namespace MattCraft.Client.Render
             GL.BindVertexArray(VAO);
             GLError.PrintError("Post vao creation");
 
-            /**
+            
             int returner;
             GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out returner);
-            Console.WriteLine(returner);**/
+            Console.WriteLine(returner);
 
             GLError.PrintError("Pre buffer data sub");
             GL.BufferSubData<float>(BufferTarget.ArrayBuffer, (IntPtr)0, sizeof(float) * data.Length, data);
@@ -46,9 +46,11 @@ namespace MattCraft.Client.Render
             GL.BufferData<float>(BufferTarget.ArrayBuffer, MAX_VERTICES * 5 * sizeof(float), new float[0, 0], BufferUsageHint.DynamicDraw);
             GLError.PrintError("Post buffer initialisation");
 
+            // Location
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
 
+            // Texture
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
             GLError.PrintError("Post world render setup");
@@ -58,7 +60,7 @@ namespace MattCraft.Client.Render
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GLError.PrintError("Pre buffer initialisation");
-            GL.BufferData<float>(BufferTarget.ArrayBuffer, MAX_VERTICES * 3 * sizeof(float), new float[0, 0], BufferUsageHint.StreamDraw);
+            GL.BufferData<float>(BufferTarget.ArrayBuffer, 8 * 3 * sizeof(float), new float[0, 0], BufferUsageHint.StreamDraw);
             GLError.PrintError("Post buffer initialisation");
 
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);

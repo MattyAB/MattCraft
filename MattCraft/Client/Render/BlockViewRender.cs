@@ -31,7 +31,7 @@ namespace MattCraft.Client.Render
             GLError.PrintError();
             //VAO = new VertexArray(constructor.GetVertexData(faces));
             VAO = new VertexArray();
-            VAO.SetupWorldRender();
+            VAO.SetupBlockViewRender();
             shader = new Shader("../../../MattCraft/Client/Shader/worldshader.vert", "../../../MattCraft/Client/Shader/wireshader.frag");
 
             this.width = Width;
@@ -39,10 +39,6 @@ namespace MattCraft.Client.Render
 
             GL.Enable(EnableCap.DepthTest);
             GLError.PrintError("Post blockview depth test enabling");
-
-            blocktextures = new TextureTiled("../../../MattCraft/Client/terrain.png", 16, 16);
-
-            constructor = new NetConstructor(blocktextures);
 
             int[] indices = new int[]
             {
@@ -80,14 +76,14 @@ namespace MattCraft.Client.Render
                 for (int dely = 0; dely <= 1; dely++)
                     for (int delz = 0; delz <= 1; delz++)
                     {
-                        data.Add(new int[] { x + delx, y + dely, z + delz, 0, 0 });       
+                        data.Add(new int[] { x + delx, y + dely, z + delz });       
                     }
 
-            float[,] returndata = new float[8, 5];
+            float[,] returndata = new float[8, 3];
 
             for(int i = 0; i < data.Count; i++)
             {
-                for(int j = 0; j < 5; j++)
+                for(int j = 0; j < 3; j++)
                 {
                     returndata[i, j] = (float)data[i][j];
                 }
@@ -97,28 +93,21 @@ namespace MattCraft.Client.Render
         }
 
         // TODO: maybe some of the maths in here could be centralised so the matrix shit only has to be done once?
-        public void RenderFrame(FrameEventArgs e, Matrix4 view)
+        public void RenderFrame(FrameEventArgs e, int[] lookingat)
         {
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            Matrix4 model = Matrix4.Identity;
+            UpdateLocation(lookingat);
 
-            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
+            shader.Use();
 
-            shader.UniformMat4("model", ref model);
-            shader.UniformMat4("view", ref view);
-            shader.UniformMat4("projection", ref perspective);
-
-
-            // THIS IS WHAT CAUSES THE PROBLEM
-            //shader.Use();
             VAO.BindVAO();
 
             GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedInt, 0);
             GLError.PrintError("Post wire drawing");
         }
-
+        
         public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)
         {
             temptime += e.Time;
@@ -126,13 +115,13 @@ namespace MattCraft.Client.Render
             {
                 tempwirelocation += 1;
                 temptime = 0;
-                VAO.PushVertexArray(blocktowiredata(tempwirelocation, 0, 0));
+                //UpdateLocation(tempwirelocation, 0, 0);
             }
         }
 
-        public void UpdateLocation(int x, int y, int z)
+        public void UpdateLocation(int[] loc)
         {
-
+            VAO.PushVertexArray(blocktowiredata(loc[0], loc[1], loc[2]));
         }
 
         public void UpdateAspect(int Width, int Height)
