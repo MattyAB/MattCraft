@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK.Graphics;
 
 namespace MattCraft.Client.Render
 {
@@ -30,7 +31,7 @@ namespace MattCraft.Client.Render
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             worldRender.RenderFrame(e, view);
-            blockViewRender.RenderFrame(e, lookingat);
+            blockViewRender.RenderFrame(e, lookingat, view);
         }
 
         public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)

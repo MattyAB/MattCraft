@@ -31,9 +31,16 @@ namespace MattCraft.Server
             return world.GetFullChunkData(playerpos, RENDER_DIST);
         }
 
-        public GameUpdate UpdateServer(FrameEventArgs e)
+        public GameUpdate UpdateServer(FrameEventArgs e, Vector3 playerpos)
         {
-            GameUpdate updatereturn = new GameUpdate();
+            this.playerpos = playerpos;
+
+            Console.WriteLine(playerpos);
+
+            GameUpdate updatereturn = new GameUpdate(playerpos);
+
+            // Now add chunk data
+            
 
             return updatereturn;
         }
@@ -42,12 +49,6 @@ namespace MattCraft.Server
         {
             return playerpos;
         }
-    }
-
-    public struct GameUpdate
-    {
-        List<BlockUpdate> blockupdates;
-        Vector3 playerpos;
     }
 
     public struct BlockUpdate

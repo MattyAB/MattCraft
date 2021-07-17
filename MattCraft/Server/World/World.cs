@@ -11,6 +11,8 @@ namespace MattCraft.Server.World
     {
         Dictionary<int[], Chunk> chunkdata;
 
+        Chunk defaultchunk;
+
         public World()
         {
             chunkdata = new Dictionary<int[], Chunk>();
@@ -19,16 +21,16 @@ namespace MattCraft.Server.World
         // For dev purporses.
         public void PopulateChunks()
         {
-            Chunk chunk = new Chunk();
+            defaultchunk = new Chunk();
 
             
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                     for (int k = 0; k < 8; k++)
                         if (i + j + k < 10)
-                            chunk.SetBlock(new Blocks.Dirt(), i, j, k);
+                            defaultchunk.SetBlock(new Blocks.Dirt(), i, j, k);
                         else if (i + j + k == 10)
-                            chunk.SetBlock(new Blocks.Snow(), i, j, k);
+                            defaultchunk.SetBlock(new Blocks.Snow(), i, j, k);
             
 
             /**
@@ -37,14 +39,14 @@ namespace MattCraft.Server.World
                     for (int k = 0; k < 16; k++)
                         chunk.SetBlock(new Blocks.Dirt(), i, j, k);**/
 
-            chunkdata.Add(new int[] { 0, 0, 0 }, chunk);
-            chunkdata.Add(new int[] { 1, 0, 0 }, chunk);
-            chunkdata.Add(new int[] { 0, 1, 0 }, chunk);
-            chunkdata.Add(new int[] { 0, 0, 1 }, chunk);
-            chunkdata.Add(new int[] { 1, 1, 0 }, chunk);
-            chunkdata.Add(new int[] { 0, 1, 1 }, chunk);
-            chunkdata.Add(new int[] { 1, 0, 1 }, chunk);
-            chunkdata.Add(new int[] { 1, 1, 1 }, chunk);
+            chunkdata.Add(new int[] { 0, 0, 0 }, defaultchunk);
+            chunkdata.Add(new int[] { 1, 0, 0 }, defaultchunk);
+            chunkdata.Add(new int[] { 0, 1, 0 }, defaultchunk);
+            chunkdata.Add(new int[] { 0, 0, 1 }, defaultchunk);
+            chunkdata.Add(new int[] { 1, 1, 0 }, defaultchunk);
+            chunkdata.Add(new int[] { 0, 1, 1 }, defaultchunk);
+            chunkdata.Add(new int[] { 1, 0, 1 }, defaultchunk);
+            chunkdata.Add(new int[] { 1, 1, 1 }, defaultchunk);
         }
 
         internal Dictionary<int[], Chunk> GetFullChunkData(Vector3 playerpos, int renderdistance)

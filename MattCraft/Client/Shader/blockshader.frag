@@ -2,7 +2,7 @@
 
 out vec4 FragColor;
 
-//in float colval;
+
 in vec2 texPos;
 
 uniform sampler2D texture0;

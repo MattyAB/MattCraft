@@ -145,6 +145,8 @@ namespace MattCraft.Client
             {
             }
 
+            Console.WriteLine(xcoords[0] + ", " + xcoords[1] + ", " + xcoords[2]);
+
             //return new int[] { 1, 0, 0 };
             return xcoords;
         }

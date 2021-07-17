@@ -17,6 +17,8 @@ namespace MattCraft.Client.Render
         int VertexShader;
         int FragmentShader;
 
+        bool wireshader;
+
         public Shader(string vertpath, string fragpath)
         {
             string VertexShaderSource;
@@ -50,7 +52,7 @@ namespace MattCraft.Client.Render
             string infoLogFrag = GL.GetShaderInfoLog(FragmentShader);
 
             if (infoLogFrag != System.String.Empty)
-                System.Console.WriteLine(infoLogFrag);
+                System.Console.WriteLine(infoLogFrag); /////// FRAGMENT Shader for worldshader fucks up here !!!
 
             Handle = GL.CreateProgram();
 
@@ -69,14 +71,17 @@ namespace MattCraft.Client.Render
 
         internal void UniformMat4(string name, ref Matrix4 perspective)
         {
-            GL.UniformMatrix4(GL.GetUniformLocation(Handle, name), false, ref perspective);
+            int location = GL.GetUniformLocation(Handle, name);
+            GLError.PrintError("A");
+            GL.UniformMatrix4(location, false, ref perspective);
+            GLError.PrintError("B");
         }
 
         public void Use()
         {
             GLError.PrintError("Pre shader using");
             GL.UseProgram(Handle);
-            GLError.PrintError("Post shader using");
+            GLError.PrintError("Post shader using - handle");
         }
 
         private bool disposedValue = false;

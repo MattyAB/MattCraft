@@ -15,8 +15,6 @@ namespace MattCraft.Client.Render
     {
         VertexArray VAO;
         Shader shader;
-        TextureTiled blocktextures;
-        NetConstructor constructor;
 
         int width;
         int height;
@@ -66,7 +64,6 @@ namespace MattCraft.Client.Render
 
             VAO.PushVertexArray(blocktowiredata(0, 0, 0));
         }
-
         public float[,] blocktowiredata(int x, int y, int z)
         {
             //float[,] data = new float[8, 5];
@@ -92,8 +89,7 @@ namespace MattCraft.Client.Render
             return returndata;
         }
 
-        // TODO: maybe some of the maths in here could be centralised so the matrix shit only has to be done once?
-        public void RenderFrame(FrameEventArgs e, int[] lookingat)
+        internal void RenderFrame(FrameEventArgs e, int[] lookingat, Matrix4 view)
         {
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -102,12 +98,27 @@ namespace MattCraft.Client.Render
 
             shader.Use();
 
+            Matrix4 model = Matrix4.Identity;
+
+            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / (float)height, 0.1f, 10000.0f);
+
+
+            GLError.PrintError("Pre wire Uniform binding");
+
+            // Move this into general render class
+            shader.UniformMat4("model", ref model);
+            shader.UniformMat4("view", ref view);
+            shader.UniformMat4("projection", ref perspective);
+
+            GLError.PrintError("Post wire Uniform binding");
+
             VAO.BindVAO();
 
             GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedInt, 0);
             GLError.PrintError("Post wire drawing");
         }
-        
+
+
         public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)
         {
             temptime += e.Time;

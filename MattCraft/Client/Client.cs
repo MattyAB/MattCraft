@@ -1,4 +1,5 @@
-﻿using MattCraft.Server.World;
+﻿using MattCraft.Server;
+using MattCraft.Server.World;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -14,21 +15,21 @@ namespace MattCraft.Client
         Render.Render render;
         Player player;
 
-        Dictionary<int[], Chunk> initialchunkdata;
+        Dictionary<int[], Chunk> chunkdata;
 
         public Client(int width, int height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
         {
-            this.initialchunkdata = initialchunkdata;
+            this.chunkdata = initialchunkdata;
             render = new Render.Render(width, height, initialchunkdata, playerpos);
             player = new Player(playerpos);
         }
 
         public void OnRenderFrame(FrameEventArgs e)
         {
-            render.RenderFrame(e, player.GetViewMatrix(), player.GetLookingAt(initialchunkdata));
+            render.RenderFrame(e, player.GetViewMatrix(), player.GetLookingAt(chunkdata));
         }
 
-        public ClientUpdateFrameReturn OnUpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)
+        public ClientUpdateFrameReturn OnUpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args, GameUpdate serverupdate)
         {
             ClientUpdateFrameReturn returner = new ClientUpdateFrameReturn();
             KeyboardState input = Keyboard.GetState();
@@ -54,6 +55,8 @@ namespace MattCraft.Client
             returner.alterCursorVisible = returner.cursorVisible ^ args.cursorVisible;
 
             render.UpdateFrame(e, args);
+
+            returner.gameupdate = new Server.GameUpdate(player.Position);
 
             //player.GetLookingAt(initialchunkdata);
 

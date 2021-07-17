@@ -31,6 +31,9 @@ namespace MattCraftClient
 
             // Development thing so that we go straight into game.
             OnClientLoad();
+
+            // So that the mouse is already normalised and doesn't move the camera a bunch at the start. also this doesn't work ...
+            Mouse.SetPosition(Width / 2 + X, Height / 2 + Y);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -43,11 +46,15 @@ namespace MattCraftClient
             base.OnRenderFrame(e);
         }
 
+
+        Vector3 previouspos;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             if(ingame)
             {
-                ClientUpdateFrameReturn update = client.OnUpdateFrame(e, getFrameArgs());
+                GameUpdate serverupdate = server.UpdateServer(e, previouspos);
+                ClientUpdateFrameReturn update = client.OnUpdateFrame(e, getFrameArgs(), serverupdate);
+                previouspos = update.gameupdate.playerpos;
                 handleFrameReturn(update);
             }
             else
