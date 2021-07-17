@@ -87,20 +87,17 @@ namespace MattCraft.Client
             int ypolarity = (ViewDirection.Y >= 0) ? 1 : -1;
             int zpolarity = (ViewDirection.Z >= 0) ? 1 : -1;
 
-            List<Vector3> vectors = new List<Vector3>();
-
             // X direction
-            bool finished = false;
+            bool xfinished = false;
             int[] xcoords = new int[3];
-            for(int i = 1; i <= ViewDirection.X * 10 && finished == false; i++)
+            float xdist = 1000000;
+            for (int i = 1; i <= xpolarity * ViewDirection.X * 10 && xfinished == false; i++)
             {
                 float xpos = (float)Math.Floor(position.X + i / ViewDirection.X);
                 float distance = (xpos - position.X) / ViewDirection.X;
                 if (distance < 20)
                 {
                     Vector3 newpos = new Vector3(xpos, position.Y + distance * ViewDirection.Y, position.Z + distance * ViewDirection.Z);
-                    if (i == 1)
-                        Console.WriteLine(newpos + "     " + distance);
 
                     int[] chunkcoords = new int[] { (int)Floor(newpos).X / 16, (int)Floor(newpos).Y / 16, (int)Floor(newpos).Z / 16 };
                     int[] blockcoords = new int[] { (int)Floor(newpos).X % 16, (int)Floor(newpos).Y % 16, (int)Floor(newpos).Z % 16 };
@@ -122,16 +119,120 @@ namespace MattCraft.Client
                             Block block = chunk.GetBlock(blockcoords);
                             if (!block.Transparent())
                             {
-                                finished = true;
+                                xfinished = true;
                                 xcoords[0] = (int)newpos.X;
                                 xcoords[1] = (int)Math.Floor(newpos.Y);
                                 xcoords[2] = (int)Math.Floor(newpos.Z);
+                                xdist = distance;
                             }
-
                         }
                     }
                 }
             }
+
+            // Y direction
+            bool yfinished = false;
+            int[] ycoords = new int[3];
+            float ydist = 1000000;
+            for (int i = 1; i <= ypolarity * ViewDirection.Y * 10 && yfinished == false; i++)
+            {
+                float ypos = (float)Math.Floor(position.Y + i / ViewDirection.Y);
+                float distance = (ypos - position.Y) / ViewDirection.Y;
+                if (distance < 20)
+                {
+                    Vector3 newpos = new Vector3(position.X + distance * ViewDirection.X, ypos, position.Z + distance * ViewDirection.Z);
+                    
+                    int[] chunkcoords = new int[] { (int)Floor(newpos).X / 16, (int)Floor(newpos).Y / 16, (int)Floor(newpos).Z / 16 };
+                    int[] blockcoords = new int[] { (int)Floor(newpos).X % 16, (int)Floor(newpos).Y % 16, (int)Floor(newpos).Z % 16 };
+                    if (blockcoords[0] < 0)
+                        blockcoords[0] = 16 + blockcoords[0];
+                    if (blockcoords[1] < 0)
+                        blockcoords[1] = 16 + blockcoords[1];
+                    if (blockcoords[2] < 0)
+                        blockcoords[2] = 16 + blockcoords[2];
+
+                    foreach (KeyValuePair<int[], Chunk> chunkpair in localchunks)
+                    {
+                        // TODO: Implement IEqualityComparer to compare chunk keys properly
+                        if (chunkpair.Key[0] == chunkcoords[0] &&
+                            chunkpair.Key[1] == chunkcoords[1] &&
+                            chunkpair.Key[2] == chunkcoords[2])
+                        {
+                            Chunk chunk = chunkpair.Value;
+                            Block block = chunk.GetBlock(blockcoords);
+                            if (!block.Transparent())
+                            {
+                                yfinished = true;
+                                ycoords[0] = (int)Math.Floor(newpos.X);
+                                ycoords[1] = (int)newpos.Y;
+                                ycoords[2] = (int)Math.Floor(newpos.Z);
+                                ydist = distance;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Z direction
+            bool zfinished = false;
+            int[] zcoords = new int[3];
+            float zdist = 1000000;
+            for (int i = 1; i <= zpolarity * ViewDirection.Z * 10 && zfinished == false; i++)
+            {
+                float zpos = (float)Math.Floor(position.Z + i / ViewDirection.Z);
+                float distance = (zpos - position.Z) / ViewDirection.Z;
+                if (distance < 20)
+                {
+                    Vector3 newpos = new Vector3(position.X + distance * ViewDirection.X, position.Y + distance * ViewDirection.Y, zpos);
+                    
+                    int[] chunkcoords = new int[] { (int)Floor(newpos).X / 16, (int)Floor(newpos).Y / 16, (int)Floor(newpos).Z / 16 };
+                    int[] blockcoords = new int[] { (int)Floor(newpos).X % 16, (int)Floor(newpos).Y % 16, (int)Floor(newpos).Z % 16 };
+                    if (blockcoords[0] < 0)
+                        blockcoords[0] = 16 + blockcoords[0];
+                    if (blockcoords[1] < 0)
+                        blockcoords[1] = 16 + blockcoords[1];
+                    if (blockcoords[2] < 0)
+                        blockcoords[2] = 16 + blockcoords[2];
+
+                    foreach (KeyValuePair<int[], Chunk> chunkpair in localchunks)
+                    {
+                        // TODO: Implement IEqualityComparer to compare chunk keys properly
+                        if (chunkpair.Key[0] == chunkcoords[0] &&
+                            chunkpair.Key[1] == chunkcoords[1] &&
+                            chunkpair.Key[2] == chunkcoords[2])
+                        {
+                            Chunk chunk = chunkpair.Value;
+                            Block block = chunk.GetBlock(blockcoords);
+                            if (!block.Transparent())
+                            {
+                                zfinished = true;
+                                zcoords[0] = (int)Math.Floor(newpos.X);
+                                zcoords[1] = (int)Math.Floor(newpos.Y);
+                                zcoords[2] = (int)newpos.Z; 
+                                zdist = distance;
+                            }
+                        }
+                    }
+                }
+            }
+
+            int[] coords;
+            if (xdist <= ydist && xdist <= zdist)
+            {
+                coords = xcoords;
+                Console.WriteLine("X");
+            }
+            else if (ydist <= zdist && ydist <= xdist)
+            {
+                coords = ycoords;
+                Console.WriteLine("Y");
+            }
+            else
+            {
+                coords = zcoords;
+                Console.WriteLine("Z");
+            }
+
 
             // The distance between this coordinate and the next integer boundary
             float xboundary = (Position.X - Floor(Position).X);
@@ -141,14 +242,13 @@ namespace MattCraft.Client
             float zboundary = (Position.Z - Floor(Position).Z);
             zboundary = (zpolarity == 1) ? 1 - zboundary : zboundary;
 
-            foreach(Vector3 vector in vectors)
-            {
-            }
+            Console.WriteLine("X " + xcoords[0] + ", " + xcoords[1] + ", " + xcoords[2]);
+            Console.WriteLine("Y " + ycoords[0] + ", " + ycoords[1] + ", " + ycoords[2]);
+            Console.WriteLine("Z " + zcoords[0] + ", " + zcoords[1] + ", " + zcoords[2]);
 
-            Console.WriteLine(xcoords[0] + ", " + xcoords[1] + ", " + xcoords[2]);
 
             //return new int[] { 1, 0, 0 };
-            return xcoords;
+            return coords;
         }
 
         public Vector3 Floor(Vector3 vec)

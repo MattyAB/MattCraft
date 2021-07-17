@@ -63,6 +63,8 @@ namespace MattCraft.Client.Render
             GLError.PrintError("Post wire ebo creation");
 
             VAO.PushVertexArray(blocktowiredata(0, 0, 0));
+
+            GL.LineWidth(2f); // Initialise our line width so they're nice and visible!
         }
         public float[,] blocktowiredata(int x, int y, int z)
         {

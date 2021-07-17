@@ -41,7 +41,7 @@ namespace MattCraft.Client
 
             if (args.focused)
             {
-                returner.cursorVisible = false;
+                returner.cursorVisible = true; /////
                 returner.resetmouse = true;
 
                 player.OnUpdateFrame(args);
