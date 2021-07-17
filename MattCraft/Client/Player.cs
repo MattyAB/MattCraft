@@ -91,16 +91,17 @@ namespace MattCraft.Client
             bool xfinished = false;
             int[] xcoords = new int[3];
             float xdist = 1000000;
-            for (int i = 1; i <= xpolarity * ViewDirection.X * 10 && xfinished == false; i++)
+            for (int xpos = (xpolarity == -1) ? (int)Math.Floor(position.X) : (int)Math.Floor(position.X + 1); Math.Abs(xpos - position.X) <= Math.Abs(ViewDirection.X * 10) && xfinished == false; xpos += xpolarity)
             {
-                float xpos = (float)Math.Floor(position.X + i / ViewDirection.X);
                 float distance = (xpos - position.X) / ViewDirection.X;
                 if (distance < 20)
                 {
                     Vector3 newpos = new Vector3(xpos, position.Y + distance * ViewDirection.Y, position.Z + distance * ViewDirection.Z);
 
-                    int[] chunkcoords = new int[] { (int)Floor(newpos).X / 16, (int)Floor(newpos).Y / 16, (int)Floor(newpos).Z / 16 };
-                    int[] blockcoords = new int[] { (int)Floor(newpos).X % 16, (int)Floor(newpos).Y % 16, (int)Floor(newpos).Z % 16 };
+                    Vector3 blocklocationpos = new Vector3((xpolarity == 1) ? newpos.X : newpos.X - 1, newpos.Y, newpos.Z);
+
+                    int[] chunkcoords = new int[] { (int)Floor(blocklocationpos).X / 16, (int)Floor(blocklocationpos).Y / 16, (int)Floor(blocklocationpos).Z / 16 };
+                    int[] blockcoords = new int[] { (int)Floor(blocklocationpos).X % 16, (int)Floor(blocklocationpos).Y % 16, (int)Floor(blocklocationpos).Z % 16 };
                     if (blockcoords[0] < 0)
                         blockcoords[0] = 16 + blockcoords[0];
                     if (blockcoords[1] < 0)
@@ -120,9 +121,9 @@ namespace MattCraft.Client
                             if (!block.Transparent())
                             {
                                 xfinished = true;
-                                xcoords[0] = (int)newpos.X;
-                                xcoords[1] = (int)Math.Floor(newpos.Y);
-                                xcoords[2] = (int)Math.Floor(newpos.Z);
+                                xcoords[0] = (int)blocklocationpos.X;
+                                xcoords[1] = (int)Math.Floor(blocklocationpos.Y);
+                                xcoords[2] = (int)Math.Floor(blocklocationpos.Z);
                                 xdist = distance;
                             }
                         }
@@ -134,16 +135,17 @@ namespace MattCraft.Client
             bool yfinished = false;
             int[] ycoords = new int[3];
             float ydist = 1000000;
-            for (int i = 1; i <= ypolarity * ViewDirection.Y * 10 && yfinished == false; i++)
+            for (int ypos = (ypolarity == -1) ? (int)Math.Floor(position.Y) : (int)Math.Floor(position.Y + 1); Math.Abs(ypos - position.Y) <= Math.Abs(ViewDirection.Y * 10) && yfinished == false; ypos += ypolarity)
             {
-                float ypos = (float)Math.Floor(position.Y + i / ViewDirection.Y);
                 float distance = (ypos - position.Y) / ViewDirection.Y;
                 if (distance < 20)
                 {
                     Vector3 newpos = new Vector3(position.X + distance * ViewDirection.X, ypos, position.Z + distance * ViewDirection.Z);
-                    
-                    int[] chunkcoords = new int[] { (int)Floor(newpos).X / 16, (int)Floor(newpos).Y / 16, (int)Floor(newpos).Z / 16 };
-                    int[] blockcoords = new int[] { (int)Floor(newpos).X % 16, (int)Floor(newpos).Y % 16, (int)Floor(newpos).Z % 16 };
+
+                    Vector3 blocklocationpos = new Vector3(newpos.X, (ypolarity == 1) ? newpos.Y : newpos.Y - 1, newpos.Z);
+
+                    int[] chunkcoords = new int[] { (int)Floor(blocklocationpos).X / 16, (int)Floor(blocklocationpos).Y / 16, (int)Floor(blocklocationpos).Z / 16 };
+                    int[] blockcoords = new int[] { (int)Floor(blocklocationpos).X % 16, (int)Floor(blocklocationpos).Y % 16, (int)Floor(blocklocationpos).Z % 16 };
                     if (blockcoords[0] < 0)
                         blockcoords[0] = 16 + blockcoords[0];
                     if (blockcoords[1] < 0)
@@ -163,9 +165,9 @@ namespace MattCraft.Client
                             if (!block.Transparent())
                             {
                                 yfinished = true;
-                                ycoords[0] = (int)Math.Floor(newpos.X);
-                                ycoords[1] = (int)newpos.Y;
-                                ycoords[2] = (int)Math.Floor(newpos.Z);
+                                ycoords[0] = (int)Math.Floor(blocklocationpos.X);
+                                ycoords[1] = (int)blocklocationpos.Y;
+                                ycoords[2] = (int)Math.Floor(blocklocationpos.Z);
                                 ydist = distance;
                             }
                         }
@@ -177,16 +179,18 @@ namespace MattCraft.Client
             bool zfinished = false;
             int[] zcoords = new int[3];
             float zdist = 1000000;
-            for (int i = 1; i <= zpolarity * ViewDirection.Z * 10 && zfinished == false; i++)
+            for (int zpos = (zpolarity == -1) ? (int)Math.Floor(position.Z) : (int)Math.Floor(position.Z + 1); Math.Abs(zpos - position.Z) <=  Math.Abs(ViewDirection.Z * 10) && zfinished == false; zpos += zpolarity)
             {
-                float zpos = (float)Math.Floor(position.Z + i / ViewDirection.Z);
+                //float zpos = (float)Math.Floor(position.Z + i / ViewDirection.Z);
                 float distance = (zpos - position.Z) / ViewDirection.Z;
                 if (distance < 20)
                 {
                     Vector3 newpos = new Vector3(position.X + distance * ViewDirection.X, position.Y + distance * ViewDirection.Y, zpos);
+
+                    Vector3 blocklocationpos = new Vector3(newpos.X, newpos.Y, (zpolarity == 1) ? newpos.Z : newpos.Z - 1);
                     
-                    int[] chunkcoords = new int[] { (int)Floor(newpos).X / 16, (int)Floor(newpos).Y / 16, (int)Floor(newpos).Z / 16 };
-                    int[] blockcoords = new int[] { (int)Floor(newpos).X % 16, (int)Floor(newpos).Y % 16, (int)Floor(newpos).Z % 16 };
+                    int[] chunkcoords = new int[] { (int)Floor(blocklocationpos).X / 16, (int)Floor(blocklocationpos).Y / 16, (int)Floor(blocklocationpos).Z / 16 };
+                    int[] blockcoords = new int[] { (int)Floor(blocklocationpos).X % 16, (int)Floor(blocklocationpos).Y % 16, (int)Floor(blocklocationpos).Z % 16 };
                     if (blockcoords[0] < 0)
                         blockcoords[0] = 16 + blockcoords[0];
                     if (blockcoords[1] < 0)
@@ -206,9 +210,9 @@ namespace MattCraft.Client
                             if (!block.Transparent())
                             {
                                 zfinished = true;
-                                zcoords[0] = (int)Math.Floor(newpos.X);
-                                zcoords[1] = (int)Math.Floor(newpos.Y);
-                                zcoords[2] = (int)newpos.Z; 
+                                zcoords[0] = (int)Math.Floor(blocklocationpos.X);
+                                zcoords[1] = (int)Math.Floor(blocklocationpos.Y);
+                                zcoords[2] = (int)blocklocationpos.Z; 
                                 zdist = distance;
                             }
                         }
