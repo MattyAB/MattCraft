@@ -10,15 +10,17 @@ namespace MattCraft.Server.World
     public class Chunk
     {
         Block[,,] blockdata;
+        int[] chunkloc;
 
-        public Chunk(Block[,,] blockdata)
+        public Chunk(Block[,,] blockdata, int[] chunkloc)
         {
             this.blockdata = blockdata;
+            this.chunkloc = chunkloc;
 
             AssertBlockData();
         }
 
-        public Chunk()
+        public Chunk(int[] chunkloc)
         {
             Block[,,] blockdata = new Block[16, 16, 16];
             for (int i = 0; i < 16; i++)
@@ -26,6 +28,11 @@ namespace MattCraft.Server.World
                     for (int k = 0; k < 16; k++)
                         blockdata[i, j, k] = new Blocks.Air();
             this.blockdata = blockdata;
+        }
+
+        public int[] GetLocation()
+        {
+            return chunkloc;
         }
 
         public Block GetBlock(int x, int y, int z)

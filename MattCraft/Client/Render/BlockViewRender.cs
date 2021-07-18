@@ -24,7 +24,7 @@ namespace MattCraft.Client.Render
         int tempwirelocation = 0;
         double temptime = 0;
 
-        public BlockViewRender(int Width, int Height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
+        public BlockViewRender(int Width, int Height, ChunkData initialchunkdata, Vector3 playerpos)
         {
             GLError.PrintError();
             //VAO = new VertexArray(constructor.GetVertexData(faces));

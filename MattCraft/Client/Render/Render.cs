@@ -17,7 +17,7 @@ namespace MattCraft.Client.Render
         WorldRender worldRender;
         BlockViewRender blockViewRender;
 
-        public Render(int Width, int Height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
+        public Render(int Width, int Height, ChunkData initialchunkdata, Vector3 playerpos)
         {
             GL.ClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 

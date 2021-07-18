@@ -15,9 +15,9 @@ namespace MattCraft.Client
         Render.Render render;
         Player player;
 
-        Dictionary<int[], Chunk> chunkdata;
+        ChunkData chunkdata;
 
-        public Client(int width, int height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
+        public Client(int width, int height, ChunkData initialchunkdata, Vector3 playerpos)
         {
             this.chunkdata = initialchunkdata;
             render = new Render.Render(width, height, initialchunkdata, playerpos);

@@ -79,7 +79,7 @@ namespace MattCraft.Client
             camera.CalcViewMat();
         }
 
-        public int[] GetLookingAt(Dictionary<int[], Chunk> localchunks)
+        public int[] GetLookingAt(ChunkData localchunks)
         {
             Vector3 ViewDirection = camera.GetDirectionMatrix();
 
@@ -109,24 +109,14 @@ namespace MattCraft.Client
                     if (blockcoords[2] < 0)
                         blockcoords[2] = 16 + blockcoords[2];
 
-                    foreach (KeyValuePair<int[], Chunk> chunkpair in localchunks)
+                    Block block = localchunks.GetChunk(chunkcoords).GetBlock(blockcoords);
+                    if (!block.Transparent())
                     {
-                        // TODO: Implement IEqualityComparer to compare chunk keys properly
-                        if (chunkpair.Key[0] == chunkcoords[0] &&
-                            chunkpair.Key[1] == chunkcoords[1] &&
-                            chunkpair.Key[2] == chunkcoords[2])
-                        {
-                            Chunk chunk = chunkpair.Value;
-                            Block block = chunk.GetBlock(blockcoords);
-                            if (!block.Transparent())
-                            {
-                                xfinished = true;
-                                xcoords[0] = (int)blocklocationpos.X;
-                                xcoords[1] = (int)Math.Floor(blocklocationpos.Y);
-                                xcoords[2] = (int)Math.Floor(blocklocationpos.Z);
-                                xdist = distance;
-                            }
-                        }
+                        xfinished = true;
+                        xcoords[0] = (int)blocklocationpos.X;
+                        xcoords[1] = (int)Math.Floor(blocklocationpos.Y);
+                        xcoords[2] = (int)Math.Floor(blocklocationpos.Z);
+                        xdist = distance;
                     }
                 }
             }
@@ -153,24 +143,14 @@ namespace MattCraft.Client
                     if (blockcoords[2] < 0)
                         blockcoords[2] = 16 + blockcoords[2];
 
-                    foreach (KeyValuePair<int[], Chunk> chunkpair in localchunks)
+                    Block block = localchunks.GetChunk(chunkcoords).GetBlock(blockcoords);
+                    if (!block.Transparent())
                     {
-                        // TODO: Implement IEqualityComparer to compare chunk keys properly
-                        if (chunkpair.Key[0] == chunkcoords[0] &&
-                            chunkpair.Key[1] == chunkcoords[1] &&
-                            chunkpair.Key[2] == chunkcoords[2])
-                        {
-                            Chunk chunk = chunkpair.Value;
-                            Block block = chunk.GetBlock(blockcoords);
-                            if (!block.Transparent())
-                            {
-                                yfinished = true;
-                                ycoords[0] = (int)Math.Floor(blocklocationpos.X);
-                                ycoords[1] = (int)blocklocationpos.Y;
-                                ycoords[2] = (int)Math.Floor(blocklocationpos.Z);
-                                ydist = distance;
-                            }
-                        }
+                        yfinished = true;
+                        ycoords[0] = (int)Math.Floor(blocklocationpos.X);
+                        ycoords[1] = (int)blocklocationpos.Y;
+                        ycoords[2] = (int)Math.Floor(blocklocationpos.Z);
+                        ydist = distance;
                     }
                 }
             }
@@ -198,24 +178,14 @@ namespace MattCraft.Client
                     if (blockcoords[2] < 0)
                         blockcoords[2] = 16 + blockcoords[2];
 
-                    foreach (KeyValuePair<int[], Chunk> chunkpair in localchunks)
+                    Block block = localchunks.GetChunk(chunkcoords).GetBlock(blockcoords);
+                    if (!block.Transparent())
                     {
-                        // TODO: Implement IEqualityComparer to compare chunk keys properly
-                        if (chunkpair.Key[0] == chunkcoords[0] &&
-                            chunkpair.Key[1] == chunkcoords[1] &&
-                            chunkpair.Key[2] == chunkcoords[2])
-                        {
-                            Chunk chunk = chunkpair.Value;
-                            Block block = chunk.GetBlock(blockcoords);
-                            if (!block.Transparent())
-                            {
-                                zfinished = true;
-                                zcoords[0] = (int)Math.Floor(blocklocationpos.X);
-                                zcoords[1] = (int)Math.Floor(blocklocationpos.Y);
-                                zcoords[2] = (int)blocklocationpos.Z; 
-                                zdist = distance;
-                            }
-                        }
+                        zfinished = true;
+                        zcoords[0] = (int)Math.Floor(blocklocationpos.X);
+                        zcoords[1] = (int)Math.Floor(blocklocationpos.Y);
+                        zcoords[2] = (int)blocklocationpos.Z;
+                        zdist = distance;
                     }
                 }
             }

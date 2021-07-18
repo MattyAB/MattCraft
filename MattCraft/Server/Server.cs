@@ -30,7 +30,7 @@ namespace MattCraft.Server
         }
 
         // Gets full chunk data given current player position.
-        public Dictionary<int[], Chunk> GetFullChunkData()
+        public ChunkData GetFullChunkData()
         {
             return world.GetFullChunkData(playerpos, RENDER_DIST);
         }

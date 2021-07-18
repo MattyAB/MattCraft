@@ -9,67 +9,57 @@ namespace MattCraft.Server.World
 {
     class World
     {
-        Dictionary<int[], Chunk> chunkdata;
+        ChunkData chunkdata;
 
         Chunk defaultchunk;
 
         public World()
         {
-            chunkdata = new Dictionary<int[], Chunk>(new ArrayEqualityComparer());
+            chunkdata = new ChunkData();
         }
 
         // For dev purporses.
         public void PopulateChunks()
         {
-            defaultchunk = new Chunk();
+            Block[,,] defaultblockdata = new Block[16, 16, 16];
 
-            
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                    for (int k = 0; k < 8; k++)
-                        if (i + j + k < 10)
-                            defaultchunk.SetBlock(new Blocks.Dirt(), i, j, k);
-                        else if (i + j + k == 10)
-                            defaultchunk.SetBlock(new Blocks.Snow(), i, j, k);
-            
+            defaultblockdata.Clone();
 
-            /**
             for (int i = 0; i < 16; i++)
                 for (int j = 0; j < 16; j++)
                     for (int k = 0; k < 16; k++)
-                        chunk.SetBlock(new Blocks.Dirt(), i, j, k);**/
+                    {
+                        defaultblockdata[i, j, k] = new Blocks.Air();
+                        if (i + j + k < 10)
+                            defaultblockdata[i, j, k] = new Blocks.Dirt();
+                        else if (i + j + k == 10)
+                            defaultblockdata[i, j, k] = new Blocks.Snow();
+                    }
 
-            chunkdata.Add(new int[] { 0, 0, 0 }, defaultchunk);
-            chunkdata.Add(new int[] { 1, 0, 0 }, defaultchunk);
-            chunkdata.Add(new int[] { 0, 1, 0 }, defaultchunk);
-            chunkdata.Add(new int[] { 0, 0, 1 }, defaultchunk);
-            chunkdata.Add(new int[] { 1, 1, 0 }, defaultchunk);
-            chunkdata.Add(new int[] { 0, 1, 1 }, defaultchunk);
-            chunkdata.Add(new int[] { 1, 0, 1 }, defaultchunk);
-            chunkdata.Add(new int[] { 1, 1, 1 }, defaultchunk);
+
+
+            chunkdata.SetChunk(new Chunk((Block[,,]) defaultblockdata.Clone(), new int[] { 0, 0, 0 }));
+            chunkdata.SetChunk(new Chunk((Block[,,])defaultblockdata.Clone(), new int[] { 1, 0, 0 }));
+            chunkdata.SetChunk(new Chunk((Block[,,])defaultblockdata.Clone(), new int[] { 0, 1, 0 }));
+            chunkdata.SetChunk(new Chunk((Block[,,])defaultblockdata.Clone(), new int[] { 0, 0, 1 }));
+            chunkdata.SetChunk(new Chunk((Block[,,])defaultblockdata.Clone(), new int[] { 1, 1, 0 }));
+            chunkdata.SetChunk(new Chunk((Block[,,])defaultblockdata.Clone(), new int[] { 0, 1, 1 }));
+            chunkdata.SetChunk(new Chunk((Block[,,])defaultblockdata.Clone(), new int[] { 1, 0, 1 }));
+            chunkdata.SetChunk(new Chunk((Block[,,])defaultblockdata.Clone(), new int[] { 1, 1, 1 }));
         }
 
         public ChunkUpdate DestroyBlock(int x, int y, int z)
         {
             int[] targetchunk = new int[] { x / 16, y / 16, z / 16 };
-            chunkdata[targetchunk].SetBlock(new Blocks.Air(), x % 16, y % 16, z % 16);
-            return new ChunkUpdate(chunkdata[targetchunk], targetchunk, false);
+            Chunk chunk = chunkdata.GetChunk(targetchunk);
+            chunk.SetBlock(new Blocks.Air(), x % 16, y % 16, z % 16);
+            chunkdata.SetChunk(chunk);
+            return new ChunkUpdate(chunk, false);
         }
 
-        internal Dictionary<int[], Chunk> GetFullChunkData(Vector3 playerpos, int renderdistance)
+        internal ChunkData GetFullChunkData(Vector3 playerpos, int renderdistance)
         {
-            Dictionary<int[], Chunk> returner = new Dictionary<int[], Chunk>(new ArrayEqualityComparer());
-
-            foreach(KeyValuePair<int[], Chunk> chunk in chunkdata)
-            {
-                Vector3 chunkcentre = new Vector3(chunk.Key[0] * 16 + 8, chunk.Key[1] * 16 + 8, chunk.Key[2] * 16 + 8);
-                if(Vector3.Distance(chunkcentre, playerpos) < (float)(16 * renderdistance))
-                {
-                    returner.Add(chunk.Key, chunk.Value);
-                }
-            }
-
-            return returner;
+            return chunkdata.GetChunksByRadius(playerpos, renderdistance);
         }
     }
 }

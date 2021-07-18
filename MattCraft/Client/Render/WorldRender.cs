@@ -17,14 +17,14 @@ namespace MattCraft.Client.Render
         TextureTiled blocktextures;
         NetConstructor constructor;
 
-        Dictionary<int[], Chunk> chunkdata;
+        ChunkData chunkdata;
 
         int width;
         int height;
 
         const int DRAW_LIMIT = 100000;
 
-        public WorldRender(int Width, int Height, Dictionary<int[], Chunk> initialchunkdata, Vector3 playerpos)
+        public WorldRender(int Width, int Height, ChunkData initialchunkdata, Vector3 playerpos)
         {
             GLError.PrintError();
             //VAO = new VertexArray(constructor.GetVertexData(faces));
@@ -43,7 +43,7 @@ namespace MattCraft.Client.Render
 
             //render = new render(playerpos);
 
-            VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(initialchunkdata)));
+            VAO.PushVertexArray(constructor.GetVertexData(initialchunkdata.GenerateChunkFaces()));
             this.chunkdata = initialchunkdata;
         }
 
@@ -55,7 +55,7 @@ namespace MattCraft.Client.Render
                 {
                     //if (!chunkdata.Remove(update.coords))
                     //    throw new Exception("Chunk to remove wasn't found... But I'm sure it exists!");
-                    chunkdata[update.coords] = update.chunk;
+                    chunkdata.SetChunk(update.chunk);
                 }
                 else
                 {
@@ -67,7 +67,7 @@ namespace MattCraft.Client.Render
             if(chunkupdate.Count != 0)
             {
                 GLError.PrintError("Pre pushing chunk data");
-                VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(chunkdata)));
+                VAO.PushVertexArray(constructor.GetVertexData(chunkdata.GenerateChunkFaces()));
                 GLError.PrintError("Post pushing chunk data");
             }
         }
@@ -90,40 +90,6 @@ namespace MattCraft.Client.Render
             VAO.BindVAO();
 
             GL.DrawArrays(PrimitiveType.Quads, 0, DRAW_LIMIT);
-        }
-
-        List<Face> GenerateChunkFaces(Dictionary<int[], Chunk> chunkdata)
-        {
-            List<Face> faces = new List<Face>();
-
-            foreach (KeyValuePair<int[], Chunk> chunk in chunkdata)
-            {
-                List<Face> newfaces = chunk.Value.GetRenderFaces();
-                
-                for (int i = 0; i < newfaces.Count; i++)
-                {
-                    newfaces[i].x += 16 * chunk.Key[0];
-                    newfaces[i].y += 16 * chunk.Key[1];
-                    newfaces[i].z += 16 * chunk.Key[2];
-                    
-                    for (int j = 0; j < faces.Count; j++)
-                    {
-                        if (newfaces[i].x == faces[j].x &&
-                            newfaces[i].y == faces[j].y &&
-                            newfaces[i].z == faces[j].z &&
-                            newfaces[i].direction == faces[j].direction)
-                        {
-                            faces.RemoveAt(j);
-                            newfaces.RemoveAt(i);
-                            i--; // So that it doesn't skip out faces due to the removal of previous ones.
-                            break;
-                        }
-                    }
-                }
-                faces.AddRange(newfaces);
-            }
-
-            return faces;
         }
 
         public void UpdateAspect(int Width, int Height)
