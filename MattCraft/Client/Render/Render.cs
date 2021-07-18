@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using MattCraft.Server.World.Blocks;
+using MattCraft.Server;
 using MattCraft.Server.World;
 using System;
 using System.Collections.Generic;
@@ -34,8 +35,9 @@ namespace MattCraft.Client.Render
             blockViewRender.RenderFrame(e, lookingat, view);
         }
 
-        public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args)
+        public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args, GameUpdate serverupdate)
         {
+            worldRender.UpdateFrame(serverupdate.chunkupdate);
             blockViewRender.UpdateFrame(e, args);
         }
 

@@ -11,6 +11,7 @@ namespace MattCraft.Server
         public GameUpdate(Vector3 position)
         {
             this.playerpos = position;
+            this.chunkupdate = new List<ChunkUpdate>();
         }
     }
 }

@@ -77,6 +77,7 @@
     <Compile Include="Server\ChunkUpdate.cs" />
     <Compile Include="Server\Server.cs" />
     <Compile Include="Server\GameUpdate.cs" />
+    <Compile Include="Server\World\ArrayEqualityComparer.cs" />
     <Compile Include="Server\World\Block.cs" />
     <Compile Include="Server\World\Blocks\Air.cs" />
     <Compile Include="Server\World\Blocks\Dirt.cs" />

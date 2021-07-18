@@ -48,13 +48,16 @@ namespace MattCraftClient
 
 
         Vector3 previouspos;
+        int[] lookingat = new int[] { 0, 0, 0, 0 };
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             if(ingame)
             {
-                GameUpdate serverupdate = server.UpdateServer(e, previouspos);
+                MouseState mousestate = Mouse.GetState();
+                GameUpdate serverupdate = server.UpdateServer(e, previouspos, mousestate, lookingat);
                 ClientUpdateFrameReturn update = client.OnUpdateFrame(e, getFrameArgs(), serverupdate);
                 previouspos = update.gameupdate.playerpos;
+                lookingat = client.GetLookingAt();
                 handleFrameReturn(update);
             }
             else

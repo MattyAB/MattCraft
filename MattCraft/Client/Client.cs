@@ -41,7 +41,7 @@ namespace MattCraft.Client
 
             if (args.focused)
             {
-                returner.cursorVisible = true; /////
+                returner.cursorVisible = false;
                 returner.resetmouse = true;
 
                 player.OnUpdateFrame(args);
@@ -54,13 +54,22 @@ namespace MattCraft.Client
 
             returner.alterCursorVisible = returner.cursorVisible ^ args.cursorVisible;
 
-            render.UpdateFrame(e, args);
+            render.UpdateFrame(e, args, serverupdate);
 
             returner.gameupdate = new Server.GameUpdate(player.Position);
 
-            //player.GetLookingAt(initialchunkdata);
+            //MouseState mousestate = Mouse.GetState();
+            //returner.breakblock = mousestate.IsButtonDown(MouseButton.Left);
+            //returner.createblock = mousestate.IsButtonDown(MouseButton.Right);
 
             return returner;
+        }
+
+        public int[] GetLookingAt()
+        {
+            return player.GetLookingAt(chunkdata);  /// TODO: Need to not do this twice, that's super inefficient!
+
+            throw new NotImplementedException();
         }
 
         public void OnUnload()
@@ -92,6 +101,9 @@ namespace MattCraft.Client
         public bool resetmouse;
         public bool cursorVisible;
         public bool alterCursorVisible;
+
+        public bool breakblock;
+        public bool createblock;
 
         public Server.GameUpdate gameupdate;
     }

@@ -221,38 +221,24 @@ namespace MattCraft.Client
             }
 
             int[] coords;
+            int direction;
             if (xdist <= ydist && xdist <= zdist)
             {
                 coords = xcoords;
-                Console.WriteLine("X");
+                direction = 0;
             }
             else if (ydist <= zdist && ydist <= xdist)
             {
                 coords = ycoords;
-                Console.WriteLine("Y");
+                direction = 1;
             }
             else
             {
                 coords = zcoords;
-                Console.WriteLine("Z");
+                direction = 2;
             }
 
-
-            // The distance between this coordinate and the next integer boundary
-            float xboundary = (Position.X - Floor(Position).X);
-            xboundary = (xpolarity == 1) ? 1 - xboundary : xboundary;
-            float yboundary = (Position.Y - Floor(Position).Y);
-            yboundary = (ypolarity == 1) ? 1 - yboundary : yboundary;
-            float zboundary = (Position.Z - Floor(Position).Z);
-            zboundary = (zpolarity == 1) ? 1 - zboundary : zboundary;
-
-            Console.WriteLine("X " + xcoords[0] + ", " + xcoords[1] + ", " + xcoords[2]);
-            Console.WriteLine("Y " + ycoords[0] + ", " + ycoords[1] + ", " + ycoords[2]);
-            Console.WriteLine("Z " + zcoords[0] + ", " + zcoords[1] + ", " + zcoords[2]);
-
-
-            //return new int[] { 1, 0, 0 };
-            return coords;
+            return new int[] { coords[0], coords[1], coords[2], direction };
         }
 
         public Vector3 Floor(Vector3 vec)

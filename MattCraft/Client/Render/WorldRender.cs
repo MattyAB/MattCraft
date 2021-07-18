@@ -1,4 +1,5 @@
-﻿using MattCraft.Server.World;
+﻿using MattCraft.Server;
+using MattCraft.Server.World;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
@@ -15,6 +16,8 @@ namespace MattCraft.Client.Render
         Shader shader;
         TextureTiled blocktextures;
         NetConstructor constructor;
+
+        Dictionary<int[], Chunk> chunkdata;
 
         int width;
         int height;
@@ -41,6 +44,29 @@ namespace MattCraft.Client.Render
             //render = new render(playerpos);
 
             VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(initialchunkdata)));
+            this.chunkdata = initialchunkdata;
+        }
+
+        internal void UpdateFrame(List<ChunkUpdate> chunkupdate)
+        {
+            foreach (ChunkUpdate update in chunkupdate)
+            {
+                if (!update.remove)
+                {
+                    chunkdata[update.coords] = update.chunk;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            
+            if(chunkupdate.Count != 0)
+            {
+                GLError.PrintError("Pre pushing chunk data");
+                VAO.PushVertexArray(constructor.GetVertexData(GenerateChunkFaces(chunkdata)));
+                GLError.PrintError("Post pushing chunk data");
+            }
         }
 
         public void RenderFrame(FrameEventArgs e, Matrix4 view)

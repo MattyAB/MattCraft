@@ -28,10 +28,11 @@ namespace MattCraft.Client.Render
             GL.BindVertexArray(VAO);
             GLError.PrintError("Post vao creation");
 
-            
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+
             int returner;
             GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out returner);
-            Console.WriteLine(returner);
+            //Console.WriteLine(returner); // Somehow the second time we run this, our buffer size is too small.
 
             GLError.PrintError("Pre buffer data sub");
             GL.BufferSubData<float>(BufferTarget.ArrayBuffer, (IntPtr)0, sizeof(float) * data.Length, data);

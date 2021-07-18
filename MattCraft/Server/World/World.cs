@@ -15,7 +15,7 @@ namespace MattCraft.Server.World
 
         public World()
         {
-            chunkdata = new Dictionary<int[], Chunk>();
+            chunkdata = new Dictionary<int[], Chunk>(new ArrayEqualityComparer());
         }
 
         // For dev purporses.
@@ -47,6 +47,13 @@ namespace MattCraft.Server.World
             chunkdata.Add(new int[] { 0, 1, 1 }, defaultchunk);
             chunkdata.Add(new int[] { 1, 0, 1 }, defaultchunk);
             chunkdata.Add(new int[] { 1, 1, 1 }, defaultchunk);
+        }
+
+        public ChunkUpdate DestroyBlock(int x, int y, int z)
+        {
+            int[] targetchunk = new int[] { x / 16, y / 16, z / 16 };
+            chunkdata[targetchunk].SetBlock(new Blocks.Air(), x % 16, y % 16, z % 16);
+            return new ChunkUpdate(chunkdata[targetchunk], targetchunk, false);
         }
 
         internal Dictionary<int[], Chunk> GetFullChunkData(Vector3 playerpos, int renderdistance)

@@ -14,6 +14,8 @@ namespace MattCraft.Server
         World.World world;
         Vector3 playerpos;
 
+        DateTime lastblockbreak;
+
         int RENDER_DIST = 2;
 
         public Server()
@@ -23,6 +25,8 @@ namespace MattCraft.Server
 
             //playerpos = new Vector3(14f, 14f, 14f);
             playerpos = new Vector3(2f, 2f, 2f);
+
+            lastblockbreak = DateTime.Now;
         }
 
         // Gets full chunk data given current player position.
@@ -31,16 +35,17 @@ namespace MattCraft.Server
             return world.GetFullChunkData(playerpos, RENDER_DIST);
         }
 
-        public GameUpdate UpdateServer(FrameEventArgs e, Vector3 playerpos)
+        public GameUpdate UpdateServer(FrameEventArgs e, Vector3 playerpos, OpenTK.Input.MouseState mousestate, int[] lookingat)
         {
             this.playerpos = playerpos;
 
-            Console.WriteLine(playerpos);
-
             GameUpdate updatereturn = new GameUpdate(playerpos);
 
-            // Now add chunk data
-            
+            if (mousestate.IsButtonDown(OpenTK.Input.MouseButton.Left) && DateTime.Now - lastblockbreak > TimeSpan.FromMilliseconds(100))
+            {
+                updatereturn.chunkupdate.Add(world.DestroyBlock(lookingat[0], lookingat[1], lookingat[2]));
+                lastblockbreak = DateTime.Now;
+            }            
 
             return updatereturn;
         }
