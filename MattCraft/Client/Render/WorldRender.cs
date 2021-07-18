@@ -53,10 +53,13 @@ namespace MattCraft.Client.Render
             {
                 if (!update.remove)
                 {
+                    //if (!chunkdata.Remove(update.coords))
+                    //    throw new Exception("Chunk to remove wasn't found... But I'm sure it exists!");
                     chunkdata[update.coords] = update.chunk;
                 }
                 else
                 {
+                    // This is meant to be for unloading chunks
                     throw new NotImplementedException();
                 }
             }
@@ -89,18 +92,20 @@ namespace MattCraft.Client.Render
             GL.DrawArrays(PrimitiveType.Quads, 0, DRAW_LIMIT);
         }
 
-        List<Face> GenerateChunkFaces(Dictionary<int[], Chunk> initialchunkdata)
+        List<Face> GenerateChunkFaces(Dictionary<int[], Chunk> chunkdata)
         {
             List<Face> faces = new List<Face>();
 
-            foreach (KeyValuePair<int[], Chunk> chunk in initialchunkdata)
+            foreach (KeyValuePair<int[], Chunk> chunk in chunkdata)
             {
                 List<Face> newfaces = chunk.Value.GetRenderFaces();
+                
                 for (int i = 0; i < newfaces.Count; i++)
                 {
                     newfaces[i].x += 16 * chunk.Key[0];
                     newfaces[i].y += 16 * chunk.Key[1];
                     newfaces[i].z += 16 * chunk.Key[2];
+                    
                     for (int j = 0; j < faces.Count; j++)
                     {
                         if (newfaces[i].x == faces[j].x &&

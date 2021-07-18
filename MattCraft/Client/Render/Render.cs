@@ -35,9 +35,9 @@ namespace MattCraft.Client.Render
             blockViewRender.RenderFrame(e, lookingat, view);
         }
 
-        public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args, GameUpdate serverupdate)
+        public void UpdateFrame(FrameEventArgs e, ClientFrameUpdateArgs args, List<ChunkUpdate> chunkupdate)
         {
-            worldRender.UpdateFrame(serverupdate.chunkupdate);
+            worldRender.UpdateFrame(chunkupdate);
             blockViewRender.UpdateFrame(e, args);
         }
 

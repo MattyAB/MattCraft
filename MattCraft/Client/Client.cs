@@ -54,7 +54,7 @@ namespace MattCraft.Client
 
             returner.alterCursorVisible = returner.cursorVisible ^ args.cursorVisible;
 
-            render.UpdateFrame(e, args, serverupdate);
+            render.UpdateFrame(e, args, serverupdate.chunkupdate);
 
             returner.gameupdate = new Server.GameUpdate(player.Position);
 

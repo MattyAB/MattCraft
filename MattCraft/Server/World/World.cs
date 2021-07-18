@@ -58,7 +58,7 @@ namespace MattCraft.Server.World
 
         internal Dictionary<int[], Chunk> GetFullChunkData(Vector3 playerpos, int renderdistance)
         {
-            Dictionary<int[], Chunk> returner = new Dictionary<int[], Chunk>();
+            Dictionary<int[], Chunk> returner = new Dictionary<int[], Chunk>(new ArrayEqualityComparer());
 
             foreach(KeyValuePair<int[], Chunk> chunk in chunkdata)
             {

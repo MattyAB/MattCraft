@@ -16,7 +16,7 @@ namespace MattCraft.Server
 
         DateTime lastblockbreak;
 
-        int RENDER_DIST = 2;
+        int RENDER_DIST = 3;
 
         public Server()
         {
